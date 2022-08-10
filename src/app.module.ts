@@ -1,11 +1,9 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { VoxPopController } from './vox-pop/vox-pop.controller';
+import { VoxPopModule } from './vox-pop/vox-pop.module';
+import { LoggerService } from './logger/logger.service';
 
 @Module({
-  imports: [],
-  controllers: [AppController, VoxPopController],
-  providers: [AppService],
+  imports: [VoxPopModule],
+  providers: [LoggerService],
 })
 export class AppModule {}
