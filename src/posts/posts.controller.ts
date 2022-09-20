@@ -1,13 +1,13 @@
 import { Controller, Get } from '@nestjs/common';
 import { PostsService } from './posts.service';
-import { Post } from './schema/post.schema'
+import { Post } from './post.schema'
 
 @Controller('posts')
 export class PostsController {
     constructor(private readonly postsService: PostsService) {}
 
     @Get()
-    async getUsers(): Promise<Post[]> {
+    async getPosts(): Promise<Post[]> {
         return this.postsService.getPosts();
     }
 }

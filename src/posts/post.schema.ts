@@ -7,12 +7,15 @@ export type PostDocument = Post & Document;
 export class Post {
     @Prop()
     userIP: string;
+
     @Prop()
     timestamp: Date;
+
     @Prop()
     submission: string;
+
     @Prop()
-    postID?: string;
+    postID: string;
 }
 
 export const PostSchema = SchemaFactory.createForClass(Post);
