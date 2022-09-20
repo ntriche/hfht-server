@@ -8,6 +8,6 @@ export class PostsController {
 
     @Get()
     async getPosts(): Promise<Post[]> {
-        return this.postsService.getPosts();
+        return this.postsService.find({});
     }
 }
