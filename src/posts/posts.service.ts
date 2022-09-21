@@ -24,17 +24,4 @@ export class PostsService {
         const newPost = new this.postModel(post);
         return newPost.save();
     }
-
-    // async storePost(voxPop: voxPop): Promise<Post> {
-    //     return this.postsRepository.create({
-    //         userIP: voxPop.userIP,
-    //         timestamp: voxPop.timestamp,
-    //         submission: voxPop.submission,
-    //         postID: voxPop?.postID,
-    //     })
-    // }
-
-    // async getPosts(): Promise<Post[]> {
-    //     return this.postsRepository.find({});
-    // }
 }
