@@ -1,6 +1,6 @@
 import { Controller, Get } from '@nestjs/common';
 import { PostsService } from './posts.service';
-import { Post } from './post.schema'
+import { Post } from './schema/post.schema'
 
 @Controller('posts')
 export class PostsController {

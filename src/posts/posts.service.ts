@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Post, PostDocument } from './post.schema';
+import { Post, PostDocument } from './schema/post.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model } from 'mongoose';
 
