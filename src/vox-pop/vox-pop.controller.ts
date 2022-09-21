@@ -22,12 +22,9 @@ export class VoxPopController {
     }
 
     this.log.write(`Vox Pop POST request received: ${JSON.stringify(voxPopDTO)}`);
-    // we do not need to queue stuff right now
-    // TODO: create all the necessary shit to have this queue work
-    // const count = this.voxPopService.enqueue(voxPopDTO);
-    // this.log.write(`Message enqueued, current messages in queue: ${count}`);
+    // TODO: write code necessary for posts to be queued and handled at some interval
 
-    // post directly to the blog instead
-    this.voxPopService.post(voxPopDTO)
+    // post directly to the blog for now
+    this.voxPopService.createTumblrPost(voxPopDTO)
   }
 }

@@ -1,35 +1,64 @@
 import { Injectable } from '@nestjs/common';
+import { PostsService } from 'src/posts/posts.service';
 import { createClient, TumblrClient, TextPostParams } from 'tumblr.js';
 import { LoggerService } from '../logger/logger.service';
 import { voxPop } from './interface/vox-pop.interface'
 
 @Injectable()
 export class VoxPopService {
-  private client: TumblrClient;
+  private tumblrClient: TumblrClient;
   blogName: string = 'hfht-bot';
   blogURL: string = 'https://hfht-bot.tumblr.com/';
   posts: voxPop[] = [];
 
-  constructor(private log: LoggerService) {
-    this.client = createClient({
+  constructor(private readonly postsService: PostsService, private log: LoggerService) {
+    this.tumblrClient = createClient({
       credentials: {
         consumer_key: '18ylKdp8vfz6DQQjuXP2rQf8w7ThPNSvp5wBZkuyQnbl2og1Db',
         consumer_secret: 'XuSKR37fCSeHLcC5vfZ2ZCveBcFHDeOPDFr4AYKBiJNHvuGHPz',
         token: 'Ie7FCYxxhBJQSHI9jERJG5fGacGqAfXS8G8seJfTmqjD4EvHEQ',
         token_secret: 'FmyLmlTaBvrABUF4i4e0JcwHOGqYwcbGv2BuJRaVnkJkMoEgLd'
-      }
+      },
+      returnPromises: true,
     });
 
-    // keep this here as a guide
-    // this.client.userInfo(function (err, data) {
-    //   console.log(data);
-    //   data.user.blogs.forEach(function(blog) {
-    //     console.log(blog.name);
-    //   });
-    // })
+    this.tumblrClient.userInfo(function (err, data) {
+      if (!!data) {
+        data.user.blogs.forEach(function(blog) {
+          log.succ('Successfully authenticated to ' + blog.name);
+        });
+      }
+    })
   }
 
-  enqueue(voxPop: voxPop): number {
+  async createTumblrPost(voxPop: voxPop): Promise<string> {
+    let postID: string = '';
+    const params = {body: voxPop.submission} as TextPostParams;
+
+    await this.tumblrClient.createTextPostWithPromise(this.blogName, params)
+      .then(data => {
+        postID = data.id_string;
+        if (!!postID) {
+          this.log.succ('Created post with content "' + voxPop.submission + '" and tumblr ID of ' + postID);
+        } else {
+          this.log.error('Something went wrong for post with content "' + voxPop.submission + '"');
+        }
+      })
+      .catch(err => console.log(err));
+
+    await this.postsService.create({
+      userIP: voxPop.userIP,
+      timestamp: voxPop.timestamp,
+      submission: voxPop.submission,
+      postID: postID,
+    })
+      .catch(err => console.log(err));
+
+    return postID;
+  }
+
+  // TODO: enqueue should make sure the post it is enqueuing hasn't already been posted by querying the DB
+  enqueuePost(voxPop: voxPop): number {
     let abbr: string = voxPop.submission;
     if (voxPop.submission.length > 16) {
       abbr = voxPop.submission.slice(0, 16) + '. . .';
@@ -39,24 +68,11 @@ export class VoxPopService {
     return this.posts.push(voxPop);
   }
 
-  post(voxPop: voxPop): string {
-    let postID: string = '';
-
-    const params = {body: voxPop.submission} as TextPostParams;
-    this.client.createTextPost(this.blogName, params, function(err, data) {
-      if (err !== null) {
-        console.log(`Failed to create a text post - ${err}`)
-        return postID;
-      }
-      postID = data.id_string;
-      console.log(`Successfully created text post with ID ${postID}`);
-    });
-    return postID;
-  }
-
-  delete(postID: string): void {
+  // TODO: should also delete from the DB, or posts in the DB should have a flag to mark if they have been deleted from the blog
+  // TODO: check and ensure if this needs a new method written in tumblr.d.ts to use promises instead of callbacks
+  deleteTumblrPost(postID: string): void {
     const params = {id: postID} as Object
-    this.client.deletePost(this.blogName, params, function(err, data) {
+    this.tumblrClient.deletePost(this.blogName, params, function(err, data) {
       if (err !== null) {
         console.log(`Failed to delete text post - ${err}`)
         return;
@@ -65,35 +81,4 @@ export class VoxPopService {
     });
     return;
   }
-
-  // TODO: fix this shit
-  // async getPostIDs(): Promise<string[]> {
-  //   return new Promise((resolve, reject) => {
-  //     let postIDs: string[] = [];
-  //     this.client.blogPosts(this.blogName, function(err, data) {
-  //       if (err !== null) {
-  //         console.log(`Failed to get post IDs - ${err}`)
-  //         reject()
-  //       }
-  //       data.posts.forEach(function(post) {
-  //         postIDs.push(post.id_string);
-  //       });
-  //     });
-  //     resolve(postIDs);
-  //   })
-  // }
-
-  // async deleteAll(): Promise<void> {
-  //   let postIDs: string[] = await this.getPostIDs();
-  //   if (postIDs.length === 0) {
-  //     console.log(`No posts to delete!`);
-  //     return;
-  //   }
-
-  //   for (let i = 0; i < postIDs.length; i++) {
-  //     console.log(`Attempting to delete post with ID ${postIDs[i]}`);
-  //     this.delete(postIDs[i]);
-  //   }
-  //   console.log(`Successfully deleted all text posts`);
-  // }
 }

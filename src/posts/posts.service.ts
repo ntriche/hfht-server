@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { voxPop } from 'src/vox-pop/interface/vox-pop.interface';
 import { Post, PostDocument } from './post.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model } from 'mongoose';
