@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PostsService } from 'src/posts/posts.service';
+import { Post } from 'src/posts/schema/post.schema';
 import { createClient, TumblrClient, TextPostParams } from 'tumblr.js';
 import { LoggerService } from '../logger/logger.service';
 import { voxPop } from './interface/vox-pop.interface'
@@ -25,36 +26,58 @@ export class VoxPopService {
     this.tumblrClient.userInfo(function (err, data) {
       if (!!data) {
         data.user.blogs.forEach(function(blog) {
-          log.succ('Successfully authenticated to ' + blog.name);
+          log.write('Successfully authenticated to ' + blog.name);
         });
       }
     })
   }
 
   async createTumblrPost(voxPop: voxPop): Promise<string> {
-    let postID: string = '';
-    const params = {body: voxPop.submission} as TextPostParams;
+    let html = '<span>' + this.createChanTimestamp(voxPop.timestamp) + '</span>\n';
+    if (this.validateSubmission(voxPop)) {
+      html += '<div>' + voxPop.alteredSubmission + '</div>\n';
+    } else {
+      html += '<div>' + voxPop.submission + '</div>\n';
+    }
+    const params = {body: html} as TextPostParams;
 
     await this.tumblrClient.createTextPostWithPromise(this.blogName, params)
       .then(data => {
-        postID = data.id_string;
-        if (!!postID) {
-          this.log.succ('Created post with content "' + voxPop.submission + '" and tumblr ID of ' + postID);
+        if (!!data.id_string) {
+          voxPop.postID = data.id_string;
+          this.log.write('Created post with UUID ' + voxPop.UUID + ' and post ID of ' + voxPop.postID);
         } else {
-          this.log.error('Something went wrong for post with content "' + voxPop.submission + '"');
+          this.log.error('Something went wrong for post with UUID "' + voxPop.UUID + '"');
         }
       })
       .catch(err => console.log(err));
 
-    await this.postsService.create({
-      userIP: voxPop.userIP,
-      timestamp: voxPop.timestamp,
-      submission: voxPop.submission,
-      postID: postID,
-    })
+    const newPost = new Post(voxPop);
+    await this.postsService.create(newPost)
       .catch(err => console.log(err));
 
-    return postID;
+    return voxPop.postID;
+  }
+
+  // return true if html tags (or other nefarious things) are in the submission field?
+  validateSubmission(voxPop: voxPop): boolean {
+    const reg = new RegExp(/<.+?>/gm);
+    if (voxPop.submission.search(reg) === -1) {
+      this.log.write('Submission contains no HTML tags.');
+      return false;
+    }
+
+    voxPop.alteredSubmission = voxPop.submission.replaceAll(reg, '');
+    this.log.write('Submission contains HTML tags. New submission is as follows: ' + voxPop.alteredSubmission);
+    return true;
+  }
+
+  createChanTimestamp(date: Date): string {
+    if (!(date instanceof Date)) {
+      date = new Date(date);
+    }
+    const localeDate = date.toLocaleDateString('en-GB', {weekday: 'short', day: 'numeric', month: 'numeric', year: '2-digit'}).split(',');
+    return localeDate[1].trimStart() + '(' + localeDate[0] + ')' + date.toLocaleTimeString('en-GB');
   }
 
   // TODO: enqueue should make sure the post it is enqueuing hasn't already been posted by querying the DB
