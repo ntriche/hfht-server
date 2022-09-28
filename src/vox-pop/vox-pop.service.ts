@@ -33,14 +33,9 @@ export class VoxPopService {
   }
 
   async createTumblrPost(voxPop: voxPop): Promise<string> {
-    let html = '<span>' + this.createChanTimestamp(voxPop.timestamp) + '</span>\n';
-    if (this.validateSubmission(voxPop)) {
-      html += '<div>' + voxPop.alteredSubmission + '</div>\n';
-    } else {
-      html += '<div>' + voxPop.submission + '</div>\n';
-    }
+    let html = '<span>' + this.createChanTimestamp(voxPop.timestamp) + '</span>\n<div>' + this.validateSubmission(voxPop) + '</div>\n';
+    
     const params = {body: html} as TextPostParams;
-
     await this.tumblrClient.createTextPostWithPromise(this.blogName, params)
       .then(data => {
         if (!!data.id_string) {
@@ -59,17 +54,16 @@ export class VoxPopService {
     return voxPop.postID;
   }
 
-  // return true if html tags (or other nefarious things) are in the submission field?
-  validateSubmission(voxPop: voxPop): boolean {
+  validateSubmission(voxPop: voxPop): string {
     const reg = new RegExp(/<.+?>/gm);
     if (voxPop.submission.search(reg) === -1) {
       this.log.write('Submission contains no HTML tags.');
-      return false;
+      return voxPop.submission;
     }
 
     voxPop.alteredSubmission = voxPop.submission.replaceAll(reg, '');
     this.log.write('Submission contains HTML tags. New submission is as follows: ' + voxPop.alteredSubmission);
-    return true;
+    return voxPop.alteredSubmission;
   }
 
   createChanTimestamp(date: Date): string {

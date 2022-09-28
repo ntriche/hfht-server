@@ -7,7 +7,7 @@ import { DashboardController } from './dashboard/dashboard.controller';
 import { DashboardService } from './dashboard/dashboard.service';
 
 @Module({
-  imports: [VoxPopModule, PostsModule, MongooseModule.forRoot('mongodb://localhost:27017')],
+  imports: [VoxPopModule, PostsModule, MongooseModule.forRoot('mongodb://localhost:27017/vox-pop')],
   providers: [LoggerService, DashboardService],
   controllers: [DashboardController],
 })
