@@ -33,7 +33,7 @@ export class VoxPopService {
   }
 
   async createTumblrPost(voxPop: voxPop): Promise<string> {
-    let html = '<span>' + this.createChanTimestamp(voxPop.timestamp) + '</span>\n<div>' + this.validateSubmission(voxPop) + '</div>\n';
+    let html = '<span>' + this.createChanTimestamp(voxPop.timestamp) + '</span>\n<div>' + this.removeHTMLTags(voxPop) + '</div>\n';
     
     const params = {body: html} as TextPostParams;
     await this.tumblrClient.createTextPostWithPromise(this.blogName, params)
@@ -54,16 +54,19 @@ export class VoxPopService {
     return voxPop.postID;
   }
 
-  validateSubmission(voxPop: voxPop): string {
+  removeHTMLTags(voxPop: voxPop): string {
     const reg = new RegExp(/<.+?>/gm);
     if (voxPop.submission.search(reg) === -1) {
-      this.log.write('Submission contains no HTML tags.');
       return voxPop.submission;
     }
 
-    voxPop.alteredSubmission = voxPop.submission.replaceAll(reg, '');
-    this.log.write('Submission contains HTML tags. New submission is as follows: ' + voxPop.alteredSubmission);
-    return voxPop.alteredSubmission;
+    if (!!!voxPop.alteredSubmission) {
+      voxPop.alteredSubmission = voxPop.submission.replaceAll(reg, '');
+      this.log.write('Submission contains HTML tags. New submission is as follows: ' + voxPop.alteredSubmission);
+      return voxPop.alteredSubmission;
+    } else {
+      throw 'Vox Pop alternative submission is not empty!';
+    }
   }
 
   createChanTimestamp(date: Date): string {
