@@ -7,7 +7,7 @@ import { voxPop } from './interface/vox-pop.interface'
 
 @Injectable()
 export class VoxPopService {
-  private static tumblrClient: TumblrClient;
+  private static tumblrClient: TumblrClient; // does dependency injection mean that making this static is redundant?
   private blogName: string = 'hfht-bot';
   private blogURL: string = 'https://hfht-bot.tumblr.com/';
   private enqueuedPosts: voxPop[] = [];
