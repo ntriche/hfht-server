@@ -78,6 +78,8 @@ export class VoxPopService {
   }
 
   // TODO: enqueue should make sure the post it is enqueuing hasn't already been posted by querying the DB
+  // or maybe this should come later in the process to prevent slow down from disk operations
+  // could query if posts are duplicates when the dashboard requests all posts in queue
   enqueuePost(voxPop: voxPop): number {
     let abbr: string = voxPop.submission;
     if (voxPop.submission.length > 16) {
