@@ -7,13 +7,8 @@ import { v4 as uuidv4 } from 'uuid';
 
 @Controller('vox-pop')
 export class VoxPopController {
-  constructor(private voxPopService: VoxPopService, private log: LoggerService) {}
-
-  @Get()
-  async controllerGet(): Promise<string> {
-    this.log.write('Vox Pop GET request received');
-    return 'this is a get test'
-  }
+  constructor(private voxPopService: VoxPopService, 
+              private log: LoggerService) {}
 
   @Post()
   @HttpCode(202) // 202 means accepted/received but not yet acted upon
@@ -42,7 +37,7 @@ export class VoxPopController {
   
       // TODO: write code necessary for posts to be queued and handled at some interval
       // post directly to the blog for now
-      this.voxPopService.createTumblrPost(newPop)
+      this.voxPopService.enqueuePost(newPop)
       return 'Submission received!';
     } catch(err) {
       console.log(err);
