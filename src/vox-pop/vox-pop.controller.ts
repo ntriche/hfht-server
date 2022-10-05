@@ -36,7 +36,6 @@ export class VoxPopController {
       }
   
       // TODO: write code necessary for posts to be queued and handled at some interval
-      // post directly to the blog for now
       this.voxPopService.enqueuePost(newPop)
       return 'Submission received!';
     } catch(err) {
