@@ -8,9 +8,9 @@ import { voxPop } from './interface/vox-pop.interface'
 @Injectable()
 export class VoxPopService {
   private tumblrClient: TumblrClient;
-  blogName: string = 'hfht-bot';
-  blogURL: string = 'https://hfht-bot.tumblr.com/';
-  posts: voxPop[] = [];
+  private blogName: string = 'hfht-bot';
+  private blogURL: string = 'https://hfht-bot.tumblr.com/';
+  private enqueuedPosts: voxPop[] = [];
 
   constructor(private readonly postsService: PostsService, private log: LoggerService) {
     this.tumblrClient = createClient({
@@ -87,7 +87,7 @@ export class VoxPopService {
     }
 
     this.log.write(`Enqueuing following post: ${abbr}`);
-    return this.posts.push(voxPop);
+    return this.enqueuedPosts.push(voxPop);
   }
 
   // TODO: should also delete from the DB, or posts in the DB should have a flag to mark if they have been deleted from the blog
@@ -102,5 +102,17 @@ export class VoxPopService {
       console.log(`Successfully deleted post with ID ${postID}`);
     });
     return;
+  }
+
+  getBlogName(): string {
+    return this.blogName;
+  }
+
+  getBlogURL(): string {
+    return this.blogURL;
+  }
+
+  getEnqueuedPosts(): string {
+    return JSON.stringify(this.enqueuedPosts)
   }
 }
