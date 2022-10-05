@@ -7,36 +7,38 @@ import { voxPop } from './interface/vox-pop.interface'
 
 @Injectable()
 export class VoxPopService {
-  private tumblrClient: TumblrClient;
+  private static tumblrClient: TumblrClient;
   private blogName: string = 'hfht-bot';
   private blogURL: string = 'https://hfht-bot.tumblr.com/';
   private enqueuedPosts: voxPop[] = [];
 
   constructor(private readonly postsService: PostsService, private log: LoggerService) {
-    this.tumblrClient = createClient({
-      credentials: {
-        consumer_key: '18ylKdp8vfz6DQQjuXP2rQf8w7ThPNSvp5wBZkuyQnbl2og1Db',
-        consumer_secret: 'XuSKR37fCSeHLcC5vfZ2ZCveBcFHDeOPDFr4AYKBiJNHvuGHPz',
-        token: 'Ie7FCYxxhBJQSHI9jERJG5fGacGqAfXS8G8seJfTmqjD4EvHEQ',
-        token_secret: 'FmyLmlTaBvrABUF4i4e0JcwHOGqYwcbGv2BuJRaVnkJkMoEgLd'
-      },
-      returnPromises: true,
-    });
-
-    this.tumblrClient.userInfo(function (err, data) {
-      if (!!data) {
-        data.user.blogs.forEach(function(blog) {
-          log.write('Successfully authenticated to ' + blog.name);
-        });
-      }
-    })
+    if (!!VoxPopService.tumblrClient) {
+      VoxPopService.tumblrClient = createClient({
+        credentials: {
+          consumer_key: '18ylKdp8vfz6DQQjuXP2rQf8w7ThPNSvp5wBZkuyQnbl2og1Db',
+          consumer_secret: 'XuSKR37fCSeHLcC5vfZ2ZCveBcFHDeOPDFr4AYKBiJNHvuGHPz',
+          token: 'Ie7FCYxxhBJQSHI9jERJG5fGacGqAfXS8G8seJfTmqjD4EvHEQ',
+          token_secret: 'FmyLmlTaBvrABUF4i4e0JcwHOGqYwcbGv2BuJRaVnkJkMoEgLd'
+        },
+        returnPromises: true,
+      });
+  
+      VoxPopService.tumblrClient.userInfo(function (err, data) {
+        if (!!data) {
+          data.user.blogs.forEach(function(blog) {
+            log.write('Successfully authenticated to ' + blog.name);
+          });
+        }
+      })
+    } 
   }
 
   async createTumblrPost(voxPop: voxPop): Promise<string> {
     let html = '<span>' + this.createChanTimestamp(voxPop.timestamp) + '</span>\n<div>' + this.removeHTMLTags(voxPop) + '</div>\n';
     
     const params = {body: html} as TextPostParams;
-    await this.tumblrClient.createTextPostWithPromise(this.blogName, params)
+    await VoxPopService.tumblrClient.createTextPostWithPromise(this.blogName, params)
       .then(data => {
         if (!!data.id_string) {
           voxPop.postID = data.id_string;
@@ -69,14 +71,6 @@ export class VoxPopService {
     }
   }
 
-  createChanTimestamp(date: Date): string {
-    if (!(date instanceof Date)) {
-      date = new Date(date);
-    }
-    const localeDate = date.toLocaleDateString('en-GB', {weekday: 'short', day: 'numeric', month: 'numeric', year: '2-digit'}).split(',');
-    return localeDate[1].trimStart() + '(' + localeDate[0] + ')' + date.toLocaleTimeString('en-GB');
-  }
-
   // TODO: enqueue should make sure the post it is enqueuing hasn't already been posted by querying the DB
   // or maybe this should come later in the process to prevent slow down from disk operations
   // could query if posts are duplicates when the dashboard requests all posts in queue
@@ -94,7 +88,7 @@ export class VoxPopService {
   // TODO: check and ensure if this needs a new method written in tumblr.d.ts to use promises instead of callbacks
   deleteTumblrPost(postID: string): void {
     const params = {id: postID} as Object
-    this.tumblrClient.deletePost(this.blogName, params, function(err, data) {
+    VoxPopService.tumblrClient.deletePost(this.blogName, params, function(err, data) {
       if (err !== null) {
         console.log(`Failed to delete text post - ${err}`)
         return;
@@ -102,6 +96,14 @@ export class VoxPopService {
       console.log(`Successfully deleted post with ID ${postID}`);
     });
     return;
+  }
+
+  createChanTimestamp(date: Date): string {
+    if (!(date instanceof Date)) {
+      date = new Date(date);
+    }
+    const localeDate = date.toLocaleDateString('en-GB', {weekday: 'short', day: 'numeric', month: 'numeric', year: '2-digit'}).split(',');
+    return localeDate[1].trimStart() + '(' + localeDate[0] + ')' + date.toLocaleTimeString('en-GB');
   }
 
   getBlogName(): string {
