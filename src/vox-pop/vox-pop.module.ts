@@ -8,6 +8,7 @@ import { PostSchema, Post } from 'src/posts/schema/post.schema';
 
 @Module({
     imports: [PostsModule, MongooseModule.forFeature([{name: Post.name, schema: PostSchema}])],
+    exports: [VoxPopService],
     controllers: [VoxPopController],
     providers: [VoxPopService, LoggerService],
 })

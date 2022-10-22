@@ -6,9 +6,10 @@ import { PostsModule } from './posts/posts.module';
 import { DashboardController } from './dashboard/dashboard.controller';
 import { DashboardService } from './dashboard/dashboard.service';
 import { ValidationMiddleware } from './middleware/validation.middleware';
+import { DashboardModule } from './dashboard/dashboard.module';
 
 @Module({
-  imports: [VoxPopModule, PostsModule, MongooseModule.forRoot('mongodb://localhost:27017/vox-pop')],
+  imports: [VoxPopModule, PostsModule, MongooseModule.forRoot('mongodb://localhost:27017/vox-pop'), DashboardModule],
   providers: [LoggerService, DashboardService],
   controllers: [DashboardController],
 })

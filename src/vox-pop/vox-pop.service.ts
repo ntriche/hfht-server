@@ -76,11 +76,11 @@ export class VoxPopService {
   // could query if posts are duplicates when the dashboard requests all posts in queue
   enqueuePost(voxPop: voxPop): number {
     let abbr: string = voxPop.submission;
-    if (voxPop.submission.length > 16) {
-      abbr = voxPop.submission.slice(0, 16) + '. . .';
+    if (voxPop.submission.length > 32) {
+      abbr = voxPop.submission.slice(0, 32) + '...';
     }
 
-    this.log.write(`Enqueuing following post: ${abbr}`);
+    this.log.write(`Enqueuing following post: "${abbr}"`);
     return this.enqueuedPosts.push(voxPop);
   }
 
@@ -114,7 +114,7 @@ export class VoxPopService {
     return this.blogURL;
   }
 
-  getEnqueuedPosts(): string {
-    return JSON.stringify(this.enqueuedPosts)
+  getEnqueuedPosts(): voxPop[] {
+    return this.enqueuedPosts;
   }
 }
