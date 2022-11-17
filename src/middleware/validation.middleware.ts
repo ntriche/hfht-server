@@ -4,8 +4,6 @@ import { Request, Response, NextFunction } from 'express';
 @Injectable()
 export class ValidationMiddleware implements NestMiddleware {
   use(req: Request, res: Response, next: NextFunction) {
-    console.log('!! validation middleware reached !!');
-    console.log(req.body);
     next();
   }
 }

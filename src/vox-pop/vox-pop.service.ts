@@ -80,7 +80,7 @@ export class VoxPopService {
       abbr = voxPop.submission.slice(0, 32) + '...';
     }
 
-    this.log.write(`Enqueuing following post: "${abbr}"`);
+    this.log.write(`Enqueuing post: "${abbr}"`);
     return this.enqueuedPosts.push(voxPop);
   }
 
