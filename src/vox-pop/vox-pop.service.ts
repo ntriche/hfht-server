@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PostsService } from 'src/posts/posts.service';
-import { Post } from 'src/posts/schema/post.schema';
+import { Post } from 'src/posts/post.schema';
 import { createClient, TumblrClient, TextPostParams } from 'tumblr.js';
 import { LoggerService } from '../logger/logger.service';
 import { voxPop } from './interface/vox-pop.interface'

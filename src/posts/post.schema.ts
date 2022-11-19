@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { voxPop } from '../../vox-pop/interface/vox-pop.interface'
+import { voxPop } from '../vox-pop/interface/vox-pop.interface'
 
 export type PostDocument = Post & Document;
 @Schema()

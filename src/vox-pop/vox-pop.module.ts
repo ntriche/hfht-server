@@ -4,7 +4,7 @@ import { VoxPopService } from './vox-pop.service';
 import { LoggerService } from '../logger/logger.service';
 import { PostsModule } from 'src/posts/posts.module';
 import { MongooseModule } from '@nestjs/mongoose';
-import { PostSchema, Post } from 'src/posts/schema/post.schema';
+import { PostSchema, Post } from 'src/posts/post.schema';
 
 @Module({
     imports: [PostsModule, MongooseModule.forFeature([{name: Post.name, schema: PostSchema}])],
