@@ -25,7 +25,7 @@ export class VoxPopController {
     }
     // Ensure each property of the DTO isn't null/empty
     try {
-      if (this.isDTOEmpty(voxPopDTO)) {
+      if (this.isDTOPropertiesEmpty(voxPopDTO)) {
         throw new HttpException("Payload is of invalid type - one or more properties is empty", 400)
       }
     } catch(err) {
@@ -78,7 +78,7 @@ export class VoxPopController {
 
   // return true if any part of the DTO is true
   // I would rather iterate over the properties of the DTO class but there doesn't seem to be a trivial way to do that
-  isDTOEmpty(voxPopDTO: voxPopDTO) {
+  isDTOPropertiesEmpty(voxPopDTO: voxPopDTO) {
     if (!!!voxPopDTO.submission || !!!voxPopDTO.timestamp || !!!voxPopDTO.userIP) {
       return true;
     }
