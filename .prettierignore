@@ -1,8 +1,10 @@
 package.json
 package-lock.json
-nest-cli-json
+nest-cli.json
 tsconfig.build.json
 tsconfig.json
+webpack-hmr.config.js
+README.md
 dist
 node_modules
 .vscode
