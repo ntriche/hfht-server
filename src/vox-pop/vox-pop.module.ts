@@ -7,9 +7,9 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { PostSchema, Post } from 'src/posts/post.schema';
 
 @Module({
-    imports: [PostsModule, MongooseModule.forFeature([{name: Post.name, schema: PostSchema}])],
-    exports: [VoxPopService],
-    controllers: [VoxPopController],
-    providers: [VoxPopService, LoggerService],
+	imports: [PostsModule, MongooseModule.forFeature([{ name: Post.name, schema: PostSchema }])],
+	exports: [VoxPopService],
+	controllers: [VoxPopController],
+	providers: [VoxPopService, LoggerService],
 })
 export class VoxPopModule {}

@@ -4,8 +4,8 @@ import { DashboardController } from './dashboard.controller';
 import { DashboardService } from './dashboard.service';
 
 @Module({
-    imports: [VoxPopModule],
-    providers: [DashboardService],
-    controllers: [DashboardController]
+	imports: [VoxPopModule],
+	providers: [DashboardService],
+	controllers: [DashboardController],
 })
 export class DashboardModule {}

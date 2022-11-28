@@ -11,14 +11,12 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 
 @Module({
-  imports: [VoxPopModule, PostsModule, MongooseModule.forRoot('mongodb://localhost:27017/hfht-server'), DashboardModule, AuthModule, UsersModule],
-  providers: [LoggerService, DashboardService],
-  controllers: [DashboardController],
+	imports: [VoxPopModule, PostsModule, MongooseModule.forRoot('mongodb://localhost:27017/hfht-server'), DashboardModule, AuthModule, UsersModule],
+	providers: [LoggerService, DashboardService],
+	controllers: [DashboardController],
 })
 export class AppModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(ValidationMiddleware)
-      .forRoutes({path: 'vox-pop', method: RequestMethod.POST});
-  }
+	configure(consumer: MiddlewareConsumer) {
+		consumer.apply(ValidationMiddleware).forRoutes({ path: 'vox-pop', method: RequestMethod.POST });
+	}
 }

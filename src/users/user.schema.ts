@@ -4,13 +4,13 @@ import { Document } from 'mongoose';
 export type UserDocument = User & Document;
 @Schema()
 export class User {
-    constructor() {}
+	constructor() {}
 
-    @Prop()
-    username: string;
+	@Prop()
+	username: string;
 
-    @Prop()
-    password: string;
+	@Prop()
+	password: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

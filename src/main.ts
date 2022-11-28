@@ -5,15 +5,15 @@ import { logger } from './middleware/logger.middleware';
 declare const module: any;
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+	const app = await NestFactory.create(AppModule);
 
-  app.use(logger);
-  app.enableCors();
-  await app.listen(3000);
+	app.use(logger);
+	app.enableCors();
+	await app.listen(3000);
 
-  if (module.hot) {
-    module.hot.accept();
-    module.hot.dispose(() => app.close());
-  }
+	if (module.hot) {
+		module.hot.accept();
+		module.hot.dispose(() => app.close());
+	}
 }
 bootstrap();
