@@ -7,9 +7,9 @@ export class VoxPopDTO {
 	public validateSubmissionLength(): string {
 		let msg: string = ''
 		if (this.submission.length < 1) {
-			msg = 'most recent submission is too short (2 character minimum)';
+			msg = 'submission is too short (2 character minimum)';
 		} else if (this.submission.length > 4096) {
-			msg = 'most recent submission is too long (4096 character maximum)';
+			msg = 'submission is too long (4096 character maximum)';
 		}
 		return msg;
 	}
