@@ -3,6 +3,16 @@ import { v4 as uuidv4 } from 'uuid';
 export class VoxPopDTO {
 	public userIP: string;
 	public submission: string;
+
+	public validateSubmissionLength(): string {
+		let msg: string = ''
+		if (this.submission.length < 1) {
+			msg = 'most recent submission is too short (2 character minimum)';
+		} else if (this.submission.length > 4096) {
+			msg = 'most recent submission is too long (4096 character maximum)';
+		}
+		return msg;
+	}
 }
 
 export class VoxPop {

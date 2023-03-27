@@ -30,7 +30,7 @@ export class VoxPopController {
 			this.log.write(`Vox Pop POST request received from ${voxPopDTO.userIP}`);
 
 			// Ensure the submission isn't too long or too short incase the website was bypassed and this endpoint was called directly
-			const errorMessage = this.validateSubmissionLength(voxPopDTO);
+			const errorMessage = voxPopDTO.validateSubmissionLength();
 			if (!!errorMessage) {
 				throw new VoxError("Submission has been rejected: " + errorMessage, HttpStatus.BAD_REQUEST)
 			}
@@ -53,15 +53,5 @@ export class VoxPopController {
 			}
 			throw new HttpException(error.msg, error.code);
 		}
-	}
-
-	validateSubmissionLength(dto: VoxPopDTO): string {
-		let error: string = ''
-		if (dto.submission.length < 1) {
-			error = 'most recent submission is too short (2 character minimum)';
-		} else if (dto.submission.length > 4096) {
-			error = 'most recent submission is too long (4096 character maximum)';
-		}
-		return error;
 	}
 }
