@@ -1,3 +1,5 @@
+import { v4 as uuidv4 } from 'uuid';
+
 export class VoxPopDTO {
 	public userIP: string;
 	public submission: string;
@@ -8,15 +10,15 @@ export class VoxPop {
 	public submissions: string[];
 	public UUID: string;
 	public postID?: string;
-	public timestampAtSubmission?: Date;
+	public timestampAtSubmission: Date;
 	public timestampAtPost?: Date;
 
-	constructor(voxPopDTO: VoxPopDTO, UUID: string) {
-		this.UUID = UUID;
+	constructor(voxPopDTO: VoxPopDTO) {
 		this.userIP = voxPopDTO.userIP;
-		this.timestampAtSubmission = new Date();
-		this.submissions = [];
 		this.submissions.push(voxPopDTO.submission);
+
+		this.UUID = uuidv4(); 
+		this.timestampAtSubmission = new Date();
 	}
 
 	// Submissions are an array where the last entry in the array is the most recently modified submission - previous subs were modified for one reason or another, so the most recent should be used
