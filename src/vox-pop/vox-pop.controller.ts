@@ -5,6 +5,11 @@ import { VoxPopDTO, VoxPop } from './vox-pop.class';
 import { v4 as uuidv4 } from 'uuid';
 
 class VoxError {
+	constructor(_msg: string, _code: HttpStatus) {
+		this.msg = _msg;
+		this.code = _code;
+	}
+
 	msg: string;
 	code: HttpStatus;
 }
@@ -19,60 +24,44 @@ export class VoxPopController {
 		// Ensure the DTO itself isn't null/empty
 		try {
 			if (!!!voxPopDTO || !!!voxPopDTO.submission || !!!voxPopDTO.userIP) {
-				const error: VoxError = { msg: 'Payload is of invalid type (must be JSON) or DTO is undefined', code: HttpStatus.BAD_REQUEST };
-				throw error;
+				this.log.write(`Invalid submission received from ${voxPopDTO.userIP}`);
+				throw new VoxError("Payload is of invalid type (must be JSON) or DTO is undefined", HttpStatus.BAD_REQUEST)
 			}
 			this.log.write(`Vox Pop POST request received from ${voxPopDTO.userIP}`);
 
 			// Ensure the submission isn't too long or too short incase the website was bypassed and this endpoint was called directly
 			const errorMessage = this.validateSubmissionLength(voxPopDTO);
 			if (!!errorMessage) {
-				const error: VoxError = { msg: 'Submission has been rejected: ' + errorMessage, code: HttpStatus.BAD_REQUEST };
-				throw error;
+				throw new VoxError("Submission has been rejected: " + errorMessage, HttpStatus.BAD_REQUEST)
 			}
 
-			// Create a UUID and the new Vox Pop from the DTO
-			let newPop: VoxPop = null;
-			const uuid = uuidv4();
-			if (!!!uuid) {
-				const error: VoxError = { msg: 'Failed to create new Vox Pop - failed to create UUID', code: HttpStatus.INTERNAL_SERVER_ERROR };
-				throw error;
-			}
-
-			newPop = new VoxPop(voxPopDTO, uuid);
-			if (!!!newPop) {
-				const error: VoxError = { msg: "Payload sucks or something I don't know bro", code: HttpStatus.BAD_REQUEST };
-				throw error;
-			}
-
-			// Finally ensure the the new Vox Pop is valid by checking if it is truthy
+			// Construct a VoxPop object from the DTO & ensure it is valid
+			let newPop = new VoxPop(voxPopDTO);
 			if (!!newPop) {
-				newPop.timestampAtSubmission = new Date();
-
-				// TODO: write code necessary for posts to be queued and handled at some interval
+				// TODO: write code necessary for posts to be queued and handled at some interval or just use Tumblr's use system
 				this.voxPopService.enqueuePost(newPop);
 
-				return 'Thank you for your submission!';
+				return "Thank you for your submission!";
+			} else {
+				throw new VoxError("Payload sucks or something I don't know bro", HttpStatus.BAD_REQUEST);
 			}
 		} catch (error) {
 			if (error instanceof VoxError) {
 				console.log(error);
-				throw new HttpException(error.msg, error.code);
+			} else {
+				console.log(`Non-Vox Error caught: ` + error);
 			}
+			throw new HttpException(error.msg, error.code);
 		}
-
-		throw new HttpException('Unspecified error', 500);
 	}
 
 	validateSubmissionLength(dto: VoxPopDTO): string {
+		let error: string = ''
 		if (dto.submission.length < 1) {
-			return 'most recent submission is too short (2 character minimum)';
+			error = 'most recent submission is too short (2 character minimum)';
+		} else if (dto.submission.length > 4096) {
+			error = 'most recent submission is too long (4096 character maximum)';
 		}
-
-		if (dto.submission.length > 4096) {
-			return 'most recent submission is too long (4096 character maximum)';
-		}
-
-		return '';
+		return error;
 	}
 }
