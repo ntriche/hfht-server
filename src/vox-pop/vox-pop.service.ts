@@ -39,7 +39,7 @@ export class VoxPopService {
 		return tumblrClient;
 	}
 
-	async createTumblrPost(voxPop: VoxPop): Promise<string> {
+	public async createTumblrPost(voxPop: VoxPop): Promise<string> {
 		const sub = voxPop.getMostRecentSubmission();
 		let html = '<span>' + this.createChanTimestamp(voxPop.timestampAtSubmission) + '</span>\n<div>' + sub + '</div>\n';
 
@@ -65,7 +65,7 @@ export class VoxPopService {
 	// TODO: enqueue should make sure the post it is enqueuing hasn't already been posted by querying the DB
 	// or maybe this should come later in the process to prevent slow down from disk operations
 	// could query if posts are duplicates when the dashboard requests all posts in queue
-	enqueuePost(voxPop: VoxPop): number {
+	public enqueuePost(voxPop: VoxPop): number {
 		let sub = voxPop.getMostRecentSubmission();
 		if (sub.length > 32) {
 			sub = sub.slice(0, 32) + '...';
@@ -74,7 +74,7 @@ export class VoxPopService {
 		return this.enqueuedPosts.push(voxPop);
 	}
 
-	createChanTimestamp(date: Date): string {
+	public createChanTimestamp(date: Date): string {
 		if (!(date instanceof Date)) {
 			date = new Date(date);
 		}
@@ -82,15 +82,15 @@ export class VoxPopService {
 		return localeDate[1].trimStart() + '(' + localeDate[0] + ')' + date.toLocaleTimeString('en-GB');
 	}
 
-	getBlogName(): string {
+	public getBlogName(): string {
 		return this.blogName;
 	}
 
-	getBlogURL(): string {
+	public getBlogURL(): string {
 		return this.blogURL;
 	}
 
-	getEnqueuedPosts(): VoxPop[] {
+	public getEnqueuedPosts(): VoxPop[] {
 		return this.enqueuedPosts;
 	}
 
