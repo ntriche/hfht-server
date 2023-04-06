@@ -11,7 +11,7 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 
 @Module({
-	imports: [VoxPopModule, PostsModule, MongooseModule.forRoot('mongodb://localhost:27017/hfht-server'), DashboardModule, AuthModule, UsersModule],
+	imports: [VoxPopModule, PostsModule, DashboardModule, AuthModule, UsersModule, MongooseModule.forRoot('mongodb://127.0.0.1:27017/hfht')],
 	providers: [LoggerService, DashboardService],
 	controllers: [DashboardController],
 })
