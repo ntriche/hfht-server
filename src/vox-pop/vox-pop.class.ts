@@ -15,7 +15,8 @@ export class VoxPop {
 
 	constructor(voxPopDTO: VoxPopDTO) {
 		this.userIP = voxPopDTO.userIP;
-		this.submissions.push(voxPopDTO.submission);
+		this.submissions = new Array<string>;
+		this.submissions[0] = voxPopDTO.submission;
 
 		this.UUID = uuidv4(); 
 		this.timestampAtSubmission = new Date();
