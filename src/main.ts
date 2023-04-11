@@ -5,6 +5,7 @@ import { logger } from './middleware/logger.middleware';
 declare const module: any;
 
 async function bootstrap() {
+	require('dotenv').config();
 	const app = await NestFactory.create(AppModule);
 
 	app.use(logger);

@@ -29,10 +29,10 @@ export class VoxPopService {
 	createTumblrClient(): TumblrClient {
 		const tumblrClient = createClient({
 			credentials: {
-				consumer_key: '18ylKdp8vfz6DQQjuXP2rQf8w7ThPNSvp5wBZkuyQnbl2og1Db',
-				consumer_secret: 'XuSKR37fCSeHLcC5vfZ2ZCveBcFHDeOPDFr4AYKBiJNHvuGHPz',
-				token: 'Ie7FCYxxhBJQSHI9jERJG5fGacGqAfXS8G8seJfTmqjD4EvHEQ',
-				token_secret: 'FmyLmlTaBvrABUF4i4e0JcwHOGqYwcbGv2BuJRaVnkJkMoEgLd',
+				consumer_key: process.env.CONSUMER_KEY,
+				consumer_secret: process.env.CONSUMER_SECRET,
+				token: process.env.TOKEN,
+				token_secret: process.env.TOKEN_SECRET,
 			},
 			returnPromises: true,
 		});
