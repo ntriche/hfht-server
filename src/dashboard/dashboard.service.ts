@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
+import { LoggerService } from 'src/logger/logger.service';
 import { VoxPopService } from 'src/vox-pop/vox-pop.service';
-import { LoggerService } from '../logger/logger.service';
 
 @Injectable()
 export class DashboardService {
