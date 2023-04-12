@@ -5,22 +5,11 @@ import { VoxPop } from 'src/vox-pop/vox-pop.class';
 export type SubmissionDocument = Submission & Document;
 @Schema()
 export class Submission {
-	constructor(voxPop: VoxPop) {
-		if (!!voxPop.userIP) {
-			this.userIP = voxPop.userIP;
-		}
-
-		if (!!voxPop.timestamp) {
-			this.timestamp = voxPop.timestamp;
-		}
-
-		if (!!voxPop.submissions) {
-			this.submissions = voxPop.submissions;
-		}
-
-		if (!!voxPop.UUID) {
-			this.UUID = voxPop.UUID;
-		}
+	constructor(voxPop: VoxPop,) {
+		if (!!voxPop.userIP) { this.userIP = voxPop.userIP; }
+		if (!!voxPop.timestamp) { this.timestamp = voxPop.timestamp; }
+		if (!!voxPop.submissions) { this.submissions = voxPop.submissions; }
+		if (!!voxPop.UUID) { this.UUID = voxPop.UUID; }
 	}
 
 	@Prop()
