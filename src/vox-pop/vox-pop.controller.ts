@@ -20,10 +20,9 @@ export class VoxPopController {
 	@Post()
 	@HttpCode(202) // 202 means accepted/received but not yet acted upon
 	async controllerPost(@Body() voxPopDTO: VoxPopDTO) {
-		// Ensure the DTO itself isn't null/empty
 		try {
-			if (!!!voxPopDTO || !!!voxPopDTO.submission || !!!voxPopDTO.userIP) {
-				this.log.write(`Invalid submission received from ${voxPopDTO.userIP}`);
+			if (!!!voxPopDTO || !!!voxPopDTO.submission) {
+				this.log.write(`Rejected an invalid submission`);
 				throw new VoxError("Payload is of invalid type (must be JSON) or DTO is undefined", HttpStatus.BAD_REQUEST)
 			}
 			
@@ -33,8 +32,7 @@ export class VoxPopController {
 				this.log.write("New Vox Pop submission received with an invalid or non-IPv4 user IP.");
 			}
 
-			// Ensure the submission isn't falsy, too long, or too short incase the website was bypassed and this endpoint was called directly
-			const msg = this.validateSubmission(voxPopDTO.submission);
+			const msg = this.validateSubmissionLength(voxPopDTO.submission);
 			if (!!msg) {
 				throw new VoxError("Submission has been rejected: " + msg, HttpStatus.BAD_REQUEST)
 			}
@@ -44,19 +42,18 @@ export class VoxPopController {
 			if (!!newPop) {
 				// TODO: write code necessary for posts to be queued and handled at some interval or just use Tumblr's use system
 				this.voxPopService.enqueuePost(newPop);
-
 				return "Thank you for your submission!";
 			} else {
 				throw new VoxError("Payload sucks or something I don't know bro", HttpStatus.BAD_REQUEST);
 			}
 		} catch (error) {
+			// I believe this 'throw' here is what the client receives
 			if (error instanceof VoxError) {
-				console.log(error);
+				throw new HttpException(error.msg, error.code);
 			} else {
 				console.log(`Non-Vox Error caught: ` + error);
+				throw error;
 			}
-			// I believe this 'throw' here is what the client receives
-			throw new HttpException(error.msg, error.code);
 		}
 	}
 
@@ -66,8 +63,7 @@ export class VoxPopController {
 		return this.ipv4_regex.test(userIP);
 	}
 
-	public validateSubmission(submission: string): string {
-		if (!!!submission) 			   { return "submission text is invalid (empty or null)"; 		}
+	public validateSubmissionLength(submission: string): string {
 		if (submission.length < 1) 	   { return "submission is too short (2 character minimum)"; 	}
 		if (submission.length > 4096)  { return "submission is too long (4096 character maximum)"; }
 		return "";

@@ -9,9 +9,7 @@ export class VoxPop {
 	public userIP: string;
 	public submissions: string[];
 	public UUID: string;
-	public postID?: string;
-	public timestampAtSubmission: Date;
-	public timestampAtPost?: Date;
+	public timestamp: Date;
 
 	constructor(voxPopDTO: VoxPopDTO) {
 		this.userIP = voxPopDTO.userIP;
@@ -19,7 +17,7 @@ export class VoxPop {
 		this.submissions[0] = voxPopDTO.submission;
 
 		this.UUID = uuidv4(); 
-		this.timestampAtSubmission = new Date();
+		this.timestamp = new Date();
 	}
 
 	// Submissions are an array where the last entry in the array is the most recently modified submission - previous subs were modified for one reason or another, so the most recent should be used

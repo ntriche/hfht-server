@@ -3,7 +3,10 @@ import { Injectable } from '@nestjs/common';
 @Injectable()
 export class LoggerService {
 	private logs: string[] = [];
-	private base: string = '[hfht] ' + this.getTimeStamp() + ' ';
+
+	createMessageBase(): string {
+		return '[hfht] ' + this.getTimeStamp() + ' ';
+	}
 
 	getTimeStamp(): string {
 		const dt = new Date();
@@ -12,19 +15,19 @@ export class LoggerService {
 	}
 
 	write(msg: string) {
-		msg = this.base + '[INF] ' + msg;
+		msg = this.createMessageBase() + '[INF] ' + msg;
 		this.logs.push(msg);
 		console.log(msg);
 	}
 
 	succ(msg: string) {
-		msg = this.base + '[SUC] ' + msg;
+		msg = this.createMessageBase() + '[SUC] ' + msg;
 		this.logs.push(msg);
 		console.log(this.text_colors['green'], msg);
 	}
 
 	error(msg: string) {
-		msg = this.base + '[ERR] ' + msg;
+		msg = this.createMessageBase() + '[ERR] ' + msg;
 		this.logs.push(msg);
 		console.log(this.text_colors['red'], msg);
 	}

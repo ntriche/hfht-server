@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { PostsService } from 'src/posts/posts.service';
-import { Post } from 'src/posts/post.schema';
+import { PostsService } from 'src/mongoDB/posts/posts.service';
+import { Post } from 'src/mongoDB/posts/post.schema';
 import { createClient, TumblrClient, TextPostParams } from 'tumblr-promises';
 import { LoggerService } from '../logger/logger.service';
 import { VoxPop } from './vox-pop.class';
@@ -15,15 +15,17 @@ export class VoxPopService {
 	constructor(private readonly postsService: PostsService, private log: LoggerService) {
 		this.tumblrClient = this.createTumblrClient();
 		// Write to the console the blog we authenticated to just to confirm we've successfully authenticated
-		if (!!this.tumblrClient) {
-			this.tumblrClient.userInfo(function (err, data) {
-				if (!!data) {
-					data.user.blogs.forEach(function (blog) {
-						log.write('Successfully authenticated to ' + blog.name);
-					});
-				}
-			});
-		}
+		this.tumblrClient.userInfo(function (err, data) {
+			if (!!data) {
+				data.user.blogs.forEach(function (blog) {
+					log.write('Successfully authenticated to ' + blog.name);
+				});
+			}
+
+			if (!!err) {
+				log.error('Failed to authenticate to Tumblr API');
+			}
+		});
 	}
 
 	createTumblrClient(): TumblrClient {
@@ -41,25 +43,26 @@ export class VoxPopService {
 
 	public async createTumblrPost(voxPop: VoxPop): Promise<string> {
 		const sub = voxPop.getMostRecentSubmission();
-		let html = '<span>' + this.createChanTimestamp(voxPop.timestampAtSubmission) + '</span>\n<div>' + sub + '</div>\n';
-
+		let html = '<span>' + this.createChanTimestamp(voxPop.timestamp) + '</span>\n<div>' + sub + '</div>\n';
 		const params = { body: html } as TextPostParams;
+
+		let postID = '';
 		await this.tumblrClient
 			.createTextPostWithPromise(this.blogName, params)
 			.then((data) => {
 				if (!!data.id_string) {
-					voxPop.postID = data.id_string;
-					this.log.write('Created post with UUID ' + voxPop.UUID + ' and post ID of ' + voxPop.postID);
+					postID = data.id_string;
+					this.log.write('Created post with UUID ' + voxPop.UUID + ' and post ID of ' + postID);
 				} else {
 					this.log.error('Something went wrong for post with UUID "' + voxPop.UUID + '"');
 				}
 			})
 			.catch((err) => console.log(err));
 
-		const newPost = new Post(voxPop);
+		const newPost = new Post(voxPop, postID);
 		await this.postsService.create(newPost).catch((err) => console.log(err));
 
-		return voxPop.postID;
+		return postID;
 	}
 
 	// TODO: enqueue should make sure the post it is enqueuing hasn't already been posted by querying the DB
