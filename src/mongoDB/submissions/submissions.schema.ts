@@ -2,20 +2,16 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import { VoxPop } from 'src/vox-pop/vox-pop.class';
 
-export type PostDocument = Post & Document;
+export type SubmissionDocument = Submission & Document;
 @Schema()
-export class Post {
+export class Submission {
 	constructor(voxPop: VoxPop) {
 		if (!!voxPop.userIP) {
 			this.userIP = voxPop.userIP;
 		}
 
-		if (!!voxPop.timestampAtSubmission) {
-			this.timestampAtSubmission = voxPop.timestampAtSubmission;
-		}
-
-		if (!!voxPop.timestampAtPost) {
-			this.timestampAtPost = voxPop.timestampAtPost;
+		if (!!voxPop.timestamp) {
+			this.timestamp = voxPop.timestamp;
 		}
 
 		if (!!voxPop.submissions) {
@@ -25,29 +21,19 @@ export class Post {
 		if (!!voxPop.UUID) {
 			this.UUID = voxPop.UUID;
 		}
-
-		if (!!voxPop.postID) {
-			this.postID = voxPop.postID;
-		}
 	}
 
 	@Prop()
 	userIP: string;
 
 	@Prop()
-	timestampAtSubmission: Date;
-
-	@Prop()
-	timestampAtPost: Date;
+	timestamp: Date;
 
 	@Prop()
 	submissions: string[];
 
 	@Prop()
 	UUID: string;
-
-	@Prop()
-	postID?: string;
 }
 
-export const PostSchema = SchemaFactory.createForClass(Post);
+export const SubmissionSchema = SchemaFactory.createForClass(Submission);
