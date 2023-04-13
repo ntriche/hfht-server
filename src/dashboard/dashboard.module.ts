@@ -4,11 +4,9 @@ import { DashboardController } from './dashboard.controller';
 import { DashboardService } from './dashboard.service';
 import { LoggerService } from 'src/logger/logger.service';
 import { SubmissionsModule } from 'src/mongoDB/submissions/submissions.module';
-import { RejectionsModule } from 'src/mongoDB/rejections/rejections.module';
-import { PostsModule } from 'src/mongoDB/posts/posts.module';
 
 @Module({
-	imports: [VoxPopModule, PostsModule, SubmissionsModule, RejectionsModule],
+	imports: [VoxPopModule, SubmissionsModule],
 	providers: [DashboardService, LoggerService],
 	controllers: [DashboardController],
 })

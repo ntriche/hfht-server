@@ -1,9 +1,9 @@
-import { Injectable } from '@nestjs/common';
-import { PostsService } from 'src/mongoDB/posts/posts.service';
-import { Post } from 'src/mongoDB/posts/post.schema';
+import { Injectable, Post } from '@nestjs/common';
+import { SubmissionsService } from 'src/mongoDB/submissions/submissions.service';
 import { createClient, TumblrClient, TextPostParams } from 'tumblr-promises';
 import { LoggerService } from '../logger/logger.service';
 import { VoxPop } from './vox-pop.class';
+import { Submission } from 'src/mongoDB/submissions/submissions.schema';
 
 @Injectable()
 export class VoxPopService {
@@ -12,7 +12,7 @@ export class VoxPopService {
 	private blogURL: string = 'https://hfht-bot.tumblr.com/';
 	private enqueuedPosts: VoxPop[] = [];
 
-	constructor(private readonly postsService: PostsService, private log: LoggerService) {
+	constructor(private readonly submissionsService: SubmissionsService, private log: LoggerService) {
 		this.tumblrClient = this.createTumblrClient();
 		// Write to the console the blog we authenticated to just to confirm we've successfully authenticated
 		this.tumblrClient.userInfo(function (err, data) {
@@ -41,7 +41,9 @@ export class VoxPopService {
 		return tumblrClient;
 	}
 
+	// Arguments needs to be changed to accept (probably) a UUID
 	public async createTumblrPost(voxPop: VoxPop): Promise<string> {
+		// Query for submission using UUID and then use that result to make the post
 		const sub = voxPop.getMostRecentSubmission();
 		let html = '<span>' + this.createChanTimestamp(voxPop.timestamp) + '</span>\n<div>' + sub + '</div>\n';
 		const params = { body: html } as TextPostParams;
@@ -58,9 +60,9 @@ export class VoxPopService {
 				}
 			})
 			.catch((err) => console.log(err));
-
-		const newPost = new Post(voxPop, postID);
-		await this.postsService.create(newPost).catch((err) => console.log(err));
+		
+		// Update this to find submission that was posted and add the postID
+		//await this.submissionsService.findOneAndUpdate().catch((err) => console.log(err));
 
 		return postID;
 	}
@@ -71,9 +73,15 @@ export class VoxPopService {
 	public enqueuePost(voxPop: VoxPop): number {
 		let sub = voxPop.getMostRecentSubmission();
 		if (sub.length > 32) {
-			sub = sub.slice(0, 32) + '...';
+			sub = sub.slice(0, 64) + '...';
 		}
-		this.log.write(`Enqueuing post: "${sub}"`);
+		this.log.write(`Enqueuing submission: "${sub}"`);
+
+		// temporary
+		const newSubmission: Submission = new Submission(voxPop);
+		this.submissionsService.create(newSubmission);
+		this.log.write(`Writing submission to DB`);
+
 		return this.enqueuedPosts.push(voxPop);
 	}
 
@@ -93,21 +101,7 @@ export class VoxPopService {
 		return this.blogURL;
 	}
 
-	public getEnqueuedPosts(): VoxPop[] {
+	public getEnqueuedSubmissions(): VoxPop[] {
 		return this.enqueuedPosts;
 	}
-
-	// TODO: should also delete from the DB, or posts in the DB should have a flag to mark if they have been deleted from the blog
-	// TODO: check and ensure if this needs a new method written in tumblr.d.ts to use promises instead of callbacks
-	// deleteTumblrPost(postID: string): void {
-	//   const params = {id: postID} as Object
-	//   VoxPopService.tumblrClient.deletePost(this.blogName, params, function(err, data) {
-	//     if (err !== null) {
-	//       console.log(`Failed to delete text post - ${err}`)
-	//       return;
-	//     }
-	//     console.log(`Successfully deleted post with ID ${postID}`);
-	//   });
-	//   return;
-	// }
 }
