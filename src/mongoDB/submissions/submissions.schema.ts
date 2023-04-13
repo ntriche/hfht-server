@@ -18,7 +18,7 @@ export class Submission {
 		if (!!voxPop.submissions) { this.submissions = voxPop.submissions; }
 		if (!!voxPop.UUID) { this.UUID = voxPop.UUID; }
 		this.reviewStatus = reviewStatus;
-		if (!!timestampAtPost) { this.timestampAtSubmission = timestampAtPost; }
+		if (!!timestampAtPost) { this.timestampAtPost = timestampAtPost; }
 		if (!!postID) { this.postID = postID; }
 	}
 
