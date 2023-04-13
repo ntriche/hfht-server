@@ -2,7 +2,6 @@ import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/c
 import { VoxPopModule } from './vox-pop/vox-pop.module';
 import { LoggerService } from './logger/logger.service';
 import { MongooseModule } from '@nestjs/mongoose';
-import { PostsModule } from './mongoDB/posts/posts.module';
 import { DashboardController } from './dashboard/dashboard.controller';
 import { DashboardService } from './dashboard/dashboard.service';
 import { ValidationMiddleware } from './middleware/validation.middleware';
@@ -12,7 +11,7 @@ import { UsersModule } from './mongoDB/users/users.module';
 import { SubmissionsModule } from './mongoDB/submissions/submissions.module';
 
 @Module({
-	imports: [VoxPopModule, PostsModule, SubmissionsModule, UsersModule, DashboardModule, AuthModule, MongooseModule.forRoot('mongodb://127.0.0.1:27017/hfht')],
+	imports: [VoxPopModule, SubmissionsModule, UsersModule, DashboardModule, AuthModule, MongooseModule.forRoot('mongodb://127.0.0.1:27017/hfht')],
 	providers: [LoggerService, DashboardService],
 	controllers: [DashboardController],
 })
