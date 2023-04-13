@@ -1,17 +1,17 @@
 import { Controller, Get, Post } from '@nestjs/common';
-import { DashboardService } from './dashboard.service';
+import { DashboardService, ReviewedSubmissionDTO } from './dashboard.service';
 
 @Controller('dashboard')
 export class DashboardController {
 	constructor(private dashboardService: DashboardService) {}
 
-	@Get() // Returns all enqueued posts
-	getPosts(): string {
-		return this.dashboardService.getPosts();
+	@Get('enqueue')
+	getEnqueuedSubmissions(): string {
+		return this.dashboardService.getEnqueuedSubmissions();
 	}
 
-	@Post() // Creates Tumblr posts
-	createPost(): string {
-		return 'lol lmao';
+	@Post()
+	handleReviewedSubmissions(submissions: ReviewedSubmissionDTO[]): string {
+		return this.dashboardService.handleReviewedSubmissions(submissions);
 	}
 }

@@ -3,7 +3,7 @@ import { VoxPopService } from './vox-pop.service';
 import { LoggerService } from '../logger/logger.service';
 import { VoxPopDTO, VoxPop } from './vox-pop.class';
 
-class VoxError {
+export class VoxError {
 	constructor(_msg: string, _code: HttpStatus) {
 		this.msg = _msg;
 		this.code = _code;

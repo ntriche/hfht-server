@@ -5,12 +5,12 @@ import { VoxPop } from 'src/vox-pop/vox-pop.class';
 export type PostDocument = Post & Document;
 @Schema()
 export class Post {
-	constructor(voxPop: VoxPop, postID: string) {
+	constructor(voxPop: VoxPop, postID: string = '', timestampAtPost: Date = null) {
 		if (!!voxPop.userIP) { this.userIP = voxPop.userIP; }
 		if (!!voxPop.submissions) { this.submissions = voxPop.submissions; }
 		if (!!voxPop.UUID) { this.UUID = voxPop.UUID; }
 		if (!!voxPop.timestamp) {this.timestampAtSubmission = voxPop.timestamp; }
-		this.timestampAtPost = new Date();
+		this.timestampAtPost = timestampAtPost;
 		this.postID = postID;
 	}
 
@@ -20,7 +20,7 @@ export class Post {
 	@Prop()
 	timestampAtSubmission: Date;
 
-	@Prop()
+	@Prop({require: false})
 	timestampAtPost: Date;
 
 	@Prop()
@@ -29,7 +29,7 @@ export class Post {
 	@Prop()
 	UUID: string;
 
-	@Prop()
+	@Prop({require: false})
 	postID: string;
 }
 
