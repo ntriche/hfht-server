@@ -1,4 +1,4 @@
-import { Injectable, Post } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { SubmissionsService } from 'src/mongoDB/submissions/submissions.service';
 import { createClient, TumblrClient, TextPostParams } from 'tumblr-promises';
 import { LoggerService } from '../logger/logger.service';
@@ -60,7 +60,7 @@ export class VoxPopService {
 				}
 			})
 			.catch((err) => console.log(err));
-		
+
 		// Update this to find submission that was posted and add the postID
 		//await this.submissionsService.findOneAndUpdate().catch((err) => console.log(err));
 
@@ -72,9 +72,7 @@ export class VoxPopService {
 	// could query if posts are duplicates when the dashboard requests all posts in queue
 	public enqueuePost(voxPop: VoxPop): number {
 		let sub = voxPop.getMostRecentSubmission();
-		if (sub.length > 32) {
-			sub = sub.slice(0, 64) + '...';
-		}
+
 		this.log.write(`Enqueuing submission: "${sub}"`);
 
 		// temporary
@@ -85,7 +83,30 @@ export class VoxPopService {
 		return this.enqueuedPosts.push(voxPop);
 	}
 
-	public createChanTimestamp(date: Date): string {
+	public getEnqueuedSubmissions(): VoxPop[] {
+		return this.enqueuedPosts;
+	}
+
+	processNewVoxPop(voxPop: VoxPop, trace: string): void {
+		const newSubmission: Submission = new Submission(voxPop);
+		try {
+			trace += `Writing submission with the following content to DB: ${this.getStringSlice(voxPop.getMostRecentSubmission(), 32)} - `
+			this.submissionsService.create(newSubmission);
+		} catch {
+			this.log.error(trace + "Failed to write submission to DB!");
+		}
+		this.log.write(trace + "Successfully wrote submission to DB");
+	}
+
+	getStringSlice(stringToBeSliced: string, maxLength: number): string {
+		let stringCopy: string = stringToBeSliced;
+		if (stringCopy.length > maxLength) {
+			stringCopy = stringCopy.slice(0, maxLength) + '...';
+		}
+		return stringCopy;
+	}
+
+	createChanTimestamp(date: Date): string {
 		if (!(date instanceof Date)) {
 			date = new Date(date);
 		}
@@ -93,15 +114,23 @@ export class VoxPopService {
 		return localeDate[1].trimStart() + '(' + localeDate[0] + ')' + date.toLocaleTimeString('en-GB');
 	}
 
-	public getBlogName(): string {
+	getBlogName(): string {
 		return this.blogName;
 	}
 
-	public getBlogURL(): string {
+	getBlogURL(): string {
 		return this.blogURL;
 	}
 
-	public getEnqueuedSubmissions(): VoxPop[] {
-		return this.enqueuedPosts;
+	// TODO: If I care about IP addresses, this regex needs work. This regular expression will give false positives.
+	private ipv4_regex: RegExp = /[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}/;
+	public validateIPv4(userIP: string): boolean {
+		return this.ipv4_regex.test(userIP);
+	}
+
+	public validateSubmissionLength(submission: string): string {
+		if (submission.length < 1) { return "submission is too short (2 character minimum)"; }
+		if (submission.length > 4096) { return "submission is too long (4096 character maximum)"; }
+		return "";
 	}
 }
