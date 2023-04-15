@@ -9,9 +9,10 @@ import { DashboardModule } from './dashboard/dashboard.module';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './mongoDB/users/users.module';
 import { SubmissionsModule } from './mongoDB/submissions/submissions.module';
+import { TumblrModule } from './tumblr/tumblr.module';
 
 @Module({
-	imports: [VoxPopModule, SubmissionsModule, UsersModule, DashboardModule, AuthModule, MongooseModule.forRoot('mongodb://127.0.0.1:27017/hfht')],
+	imports: [VoxPopModule, SubmissionsModule, UsersModule, DashboardModule, AuthModule, MongooseModule.forRoot('mongodb://127.0.0.1:27017/hfht'), TumblrModule],
 	providers: [LoggerService, DashboardService],
 	controllers: [DashboardController],
 })
