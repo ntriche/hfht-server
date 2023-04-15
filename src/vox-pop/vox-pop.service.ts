@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { SubmissionsService } from 'src/mongoDB/submissions/submissions.service';
-import { createClient, TumblrClient, TextPostParams } from 'tumblr-promises';
 import { LoggerService } from '../logger/logger.service';
 import { VoxPop } from './vox-pop.class';
 import { Submission } from 'src/mongoDB/submissions/submissions.schema';

@@ -4,12 +4,6 @@ import { ReviewStatus, Submission } from 'src/mongoDB/submissions/submissions.sc
 import { SubmissionsService } from 'src/mongoDB/submissions/submissions.service';
 import { VoxPopService } from 'src/vox-pop/vox-pop.service';
 
-export interface ReviewedSubmissionDTO {
-	status: ReviewStatus,
-	pop: Submission,
-	edit: string,
-}
-
 @Injectable()
 export class DashboardService {
 	constructor(private voxPopService: VoxPopService, private readonly submissionsService: SubmissionsService, private log: LoggerService) {}
@@ -36,26 +30,22 @@ export class DashboardService {
 		return 'There are no un-reviewed submissions.';
 	}
 
-	async handleReviewedSubmissions(submissions: ReviewedSubmissionDTO[]): Promise<string> {
+	async handleReviewedSubmissions(submissions: Submission[]): Promise<string> {
 		try {
 			submissions.forEach(async sub => {
-				if (!!sub.edit) {
-					sub.pop.submissions.push(sub.edit);
-				}
-	
-				switch (sub.status) {
+				switch (sub.reviewStatus) {
 					// This shit shouldn't be here
 					case ReviewStatus.NotReviewed:
 						throw new HttpException('Un-reviewed submission received! Do not submit un-reviewed submissions!', 400)
 					case ReviewStatus.Denied:
-						await this.submissionsService.findOneAndUpdate({'UUID':sub.pop.UUID}, {'reviewStatus':1})
+						await this.submissionsService.findOneAndUpdate({'UUID':sub.UUID}, {'reviewStatus':1})
 						break;
 					case ReviewStatus.Approved:
-						await this.submissionsService.findOneAndUpdate({'UUID':sub.pop.UUID}, {'reviewStatus':2})
+						await this.submissionsService.findOneAndUpdate({'UUID':sub.UUID}, {'reviewStatus':2})
 						//  enqueue
 						break;
 					case ReviewStatus.SuperApproved:
-						await this.submissionsService.findOneAndUpdate({'UUID':sub.pop.UUID}, {'reviewStatus':3})
+						await this.submissionsService.findOneAndUpdate({'UUID':sub.UUID}, {'reviewStatus':3})
 						// post immediately
 						break;
 					default:
