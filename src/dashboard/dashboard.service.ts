@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { LoggerService } from 'src/logger/logger.service';
-import { ReviewStatus, Submission } from 'src/mongoDB/submissions/submissions.schema';
+import { ReviewStatus, Submission, SubmissionDTO } from 'src/mongoDB/submissions/submissions.schema';
 import { SubmissionsService } from 'src/mongoDB/submissions/submissions.service';
 import { VoxPopService } from 'src/vox-pop/vox-pop.service';
 
@@ -21,7 +21,7 @@ export class DashboardService {
 
 	async getUnreviewedSubmissions(): Promise<string> {
 		let msg = `Request received for un-reviewed submissions - `
-		const reviewedSubmissions = await this.submissionsService.find({'reviewStatus': 0});
+		const reviewedSubmissions: Submission[] = await this.submissionsService.find({'reviewStatus': 0});
 		if (reviewedSubmissions.length > 0) {
 			this.log.write(msg + `returning ${reviewedSubmissions.length} un-reviewed submissions`);
 			return JSON.stringify(reviewedSubmissions);
@@ -30,33 +30,29 @@ export class DashboardService {
 		return 'There are no un-reviewed submissions.';
 	}
 
-	async handleReviewedSubmissions(submissions: Submission[]): Promise<string> {
-		try {
-			submissions.forEach(async sub => {
-				switch (sub.reviewStatus) {
-					// This shit shouldn't be here
-					case ReviewStatus.NotReviewed:
-						throw new HttpException('Un-reviewed submission received! Do not submit un-reviewed submissions!', 400)
-					case ReviewStatus.Denied:
-						await this.submissionsService.findOneAndUpdate({'UUID':sub.UUID}, {'reviewStatus':1})
-						break;
-					case ReviewStatus.Approved:
-						await this.submissionsService.findOneAndUpdate({'UUID':sub.UUID}, {'reviewStatus':2})
-						//  enqueue
-						break;
-					case ReviewStatus.SuperApproved:
-						await this.submissionsService.findOneAndUpdate({'UUID':sub.UUID}, {'reviewStatus':3})
-						// post immediately
-						break;
-					default:
-						throw new HttpException('Submission with an invalid post-status received!', 400)
-				}
-	
-			});
-		} catch {
-			console.log('hi');
-		}
+	async handleReviewedSubmissions(submissions: SubmissionDTO[]): Promise<string> {
+		this.log.write('Request received to update reviewed submissions.')
+		submissions.forEach(async sub => {
+			if (sub.reviewStatus == ReviewStatus.NotReviewed) {
+				this.log.write("Rejected submission review POST request - un-viewed submission received.");
+				throw new HttpException('Un-reviewed submission received! Do not submit un-reviewed submissions!', HttpStatus.BAD_REQUEST)
+			}
 
-		return HttpStatus.OK.toString();
+			if (sub.reviewStatus > 3) {
+				this.log.write("Rejected submission review POST request - invalid review status received.");
+				throw new HttpException('Invalid review status received', HttpStatus.BAD_REQUEST)
+			}
+
+			// fetch submission from db that has this UUID
+			const db_sub: Submission = await this.submissionsService.findOne({'UUID':sub.UUID});
+			if (!!!db_sub) {
+				this.log.write("Rejected submission review POST request - could not find DB submission with UUID " + sub.UUID);
+				throw new HttpException('Invalid UUID ' + sub.UUID, HttpStatus.BAD_REQUEST)
+			}
+			this.log.write(`Updating submission with UUID ${db_sub.UUID} and status ${db_sub.reviewStatus} to ${sub.reviewStatus}`)
+			this.submissionsService.findOneAndUpdate({'UUID':sub.UUID}, {'reviewStatus': sub.reviewStatus});
+		});
+
+		return `Processed ${submissions.length} posts`;
 	}
 }

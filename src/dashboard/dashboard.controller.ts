@@ -1,7 +1,7 @@
-import { Controller, Get, Post, HttpStatus, HttpException } from '@nestjs/common';
+import { Controller, Get, Post, HttpStatus, HttpException, Body } from '@nestjs/common';
 import { DashboardService } from './dashboard.service';
 import { LoggerService } from 'src/logger/logger.service';
-import { Submission } from 'src/mongoDB/submissions/submissions.schema';
+import { SubmissionDTO } from 'src/mongoDB/submissions/submissions.schema';
 
 @Controller('dashboard')
 export class DashboardController {
@@ -18,22 +18,20 @@ export class DashboardController {
 	}
 
 	@Post('submit-review')
-	async handleReviewedSubmissions(submissions: Submission[]): Promise<string> {
+	async handleReviewedSubmissions(@Body() submissions: SubmissionDTO[]): Promise<string> {
 		if (!!!submissions) {
 			this.log.error('Received invalid POST request to handle reviewed submissions.');
 			throw new HttpException('Reviewed submissions are undefined, null, or generally fucked up', HttpStatus.BAD_REQUEST);
 		}
 
-		return this.dashboardService.handleReviewedSubmissions(submissions);
-	}
-
-	@Post('test')
-	test(s: string): string {
-		if (!!!s) {
-			console.log('looks like ass');
-			return 'ass'
+		try {
+			return this.dashboardService.handleReviewedSubmissions(submissions);
+		} catch(error) {
+			if (error instanceof HttpException) {
+				this.log.error('Received invalid POST request to handle reviewed submissions.');
+				throw error;
+			}
 		}
-		console.log('looks good right?')
 	}
 }
 	
