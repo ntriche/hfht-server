@@ -31,8 +31,22 @@ export class TumblrService {
         return this.initialized;
     }
 
+	createTumblrClient(): TumblrClient {
+		const tumblrClient = createClient({
+			credentials: {
+				consumer_key: process.env.CONSUMER_KEY,
+				consumer_secret: process.env.CONSUMER_SECRET,
+				token: process.env.TOKEN,
+				token_secret: process.env.TOKEN_SECRET,
+			},
+			returnPromises: true,
+		});
+
+		return tumblrClient;
+	}
+
 	// Arguments needs to be changed to accept (probably) a UUID
-	public async createTumblrPost(voxPop: VoxPop): Promise<string> {
+	public async createTumblrPost(voxPop: VoxPop | undefined, UUID: string | undefined): Promise<string> {
 		// Query for submission using UUID and then use that result to make the post
 		const sub = voxPop.getMostRecentSubmission();
 		let html = '<span>' + this.createChanTimestamp(voxPop.timestamp) + '</span>\n<div>' + sub + '</div>\n';
@@ -57,29 +71,7 @@ export class TumblrService {
 		return postID;
 	}
 
-	public getBlogName(): string {
-		return this.blogName;
-	}
-
-	public getBlogURL(): string {
-		return this.blogURL;
-	}
-
-	createTumblrClient(): TumblrClient {
-		const tumblrClient = createClient({
-			credentials: {
-				consumer_key: process.env.CONSUMER_KEY,
-				consumer_secret: process.env.CONSUMER_SECRET,
-				token: process.env.TOKEN,
-				token_secret: process.env.TOKEN_SECRET,
-			},
-			returnPromises: true,
-		});
-
-		return tumblrClient;
-	}
-
-	createChanTimestamp(date: Date): string {
+	private createChanTimestamp(date: Date): string {
 		if (!(date instanceof Date)) {
 			date = new Date(date);
 		}

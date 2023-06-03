@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { VoxPopController } from './vox-pop.controller';
 import { VoxPopService } from './vox-pop.service';
-import { LoggerService } from '../logger/logger.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { SubmissionsModule } from 'src/mongoDB/submissions/submissions.module';
 import { Submission, SubmissionSchema } from 'src/mongoDB/submissions/submissions.schema';
@@ -10,6 +9,6 @@ import { Submission, SubmissionSchema } from 'src/mongoDB/submissions/submission
 	imports: [SubmissionsModule, MongooseModule.forFeature([{ name: Submission.name, schema: SubmissionSchema }])],
 	exports: [VoxPopService],
 	controllers: [VoxPopController],
-	providers: [VoxPopService, LoggerService],
+	providers: [VoxPopService],
 })
 export class VoxPopModule {}
