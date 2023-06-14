@@ -43,12 +43,7 @@ export class Submission {
 		if (!!timestampAtPost) { this.timestampAtPost = timestampAtPost; }
 		if (!!postID) { this.postID = postID; }
 
-		this.quality = this.generateQuality();
-	}
-
-	// TODO: Do something with this later
-	private generateQuality(): Quality {
-		return Quality.None;
+		this.quality = Quality.None;
 	}
 
 	@Prop()
