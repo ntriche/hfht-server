@@ -1,4 +1,4 @@
-import { Body, Controller, HttpStatus, Post, HttpCode, UseGuards, Req, Get } from '@nestjs/common';
+import { Body, Controller, Post, UseGuards, Get, HttpCode } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { JwtAuthGuard } from './guards/jwt-auth-guard';
@@ -18,12 +18,14 @@ export class AuthController {
 	constructor(private readonly authService: AuthService) {}
 
   	@Post('login')
+	@HttpCode(200)
 	@UseGuards(LocalAuthGuard)
 	async login(@Body() authDTO: AuthDTO): Promise<object> {
 		return await this.authService.login(authDTO);
 	}
 
 	@Post('hash')
+	@HttpCode(200)
 	@UseGuards(JwtAuthGuard)
 	async hash(@Body() hashDTO: HashDTO): Promise<string> {
 		return await this.authService.createHash(hashDTO.plaintextPassword);
