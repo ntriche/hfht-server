@@ -16,12 +16,12 @@ export class VoxPopService {
 	public enqueuePost(voxPop: VoxPop): number {
 		let sub = voxPop.getMostRecentSubmission();
 
-		this.log.write(`Enqueuing submission: "${sub}"`);
+		this.log.info(`Enqueuing submission: "${sub}"`);
 
 		// temporary
 		const newSubmission: Submission = new Submission(voxPop);
 		this.submissionsService.create(newSubmission);
-		this.log.write(`Writing submission to DB`);
+		this.log.info(`Writing submission to DB`);
 
 		return this.enqueuedPosts.push(voxPop);
 	}
@@ -38,7 +38,7 @@ export class VoxPopService {
 		} catch {
 			this.log.error(trace + "Failed to write submission to DB!");
 		}
-		this.log.write(trace + "Successfully wrote submission to DB");
+		this.log.info(trace + "Successfully wrote submission to DB");
 	}
 
 	getStringSlice(stringToBeSliced: string, maxLength: number): string {

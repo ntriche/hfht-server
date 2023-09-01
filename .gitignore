@@ -395,6 +395,8 @@ Temporary Items
 =======
 # Local
 .env
+env.ts
+constants.ts
 dist
 
 *.txt

@@ -10,10 +10,20 @@ import { UsersModule } from './mongoDB/users/users.module';
 import { SubmissionsModule } from './mongoDB/submissions/submissions.module';
 import { TumblrModule } from './tumblr/tumblr.module';
 import { LoggerModule } from './logger/logger.module';
+import { AuthController } from './auth/auth.controller';
 
 @Module({
-	imports: [VoxPopModule, SubmissionsModule, UsersModule, DashboardModule, AuthModule, TumblrModule, MongooseModule.forRoot('mongodb://127.0.0.1:27017/hfht'), LoggerModule],
-	providers: [LoggerService, DashboardService],
-	controllers: [DashboardController],
+	imports: [
+		VoxPopModule, 
+		SubmissionsModule, 
+		UsersModule, 
+		DashboardModule, 
+		AuthModule, 
+		TumblrModule,
+		LoggerModule,
+		MongooseModule.forRoot('mongodb://127.0.0.1:27017/hfht'), 
+	],
+	providers: [DashboardService, LoggerService],
+	controllers: [DashboardController, AuthController],
 })
 export class AppModule {}

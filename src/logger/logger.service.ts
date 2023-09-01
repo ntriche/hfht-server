@@ -14,7 +14,7 @@ export class LoggerService {
 		return stamp;
 	}
 
-	write(msg: string) {
+	info(msg: string) {
 		msg = this.createMessageBase() + '[INF] ' + msg;
 		this.logs.push(msg);
 		console.log(msg);

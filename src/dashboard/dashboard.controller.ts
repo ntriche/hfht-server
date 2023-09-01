@@ -8,30 +8,18 @@ export class DashboardController {
 	constructor(private dashboardService: DashboardService, private log: LoggerService) {}
 
 	@Get('enqueue')
-	getEnqueuedSubmissions(): string {
+	enqueue(): string {
 		return this.dashboardService.getEnqueuedSubmissions();
 	}
 
 	@Get('unreviewed')
-	async getUnreviewedSubmissions(): Promise<string> {
+	async unreviewed(): Promise<string> {
 		return this.dashboardService.getUnreviewedSubmissions();
 	}
 
 	@Post('submit-review')
-	async handleReviewedSubmissions(@Body() submissions: SubmissionDTO[]): Promise<string> {
-		if (!!!submissions) {
-			this.log.error('Received invalid POST request to handle reviewed submissions.');
-			throw new HttpException('Reviewed submissions are undefined, null, or generally fucked up', HttpStatus.BAD_REQUEST);
-		}
-
-		try {
-			return this.dashboardService.handleReviewedSubmissions(submissions);
-		} catch(error) {
-			if (error instanceof HttpException) {
-				this.log.error('Received invalid POST request to handle reviewed submissions.');
-				throw error;
-			}
-		}
+	async submitReview(@Body() submissions: SubmissionDTO[]): Promise<string> {
+		return this.dashboardService.handleReviewedSubmissions(submissions);
 	}
 }
 	
