@@ -1,24 +1,37 @@
-import { Body, Controller, HttpException, HttpStatus, Post, HttpCode } from '@nestjs/common';
+import { Body, Controller, HttpStatus, Post, HttpCode, UseGuards, Req, Get } from '@nestjs/common';
 import { AuthService } from './auth.service';
+import { LocalAuthGuard } from './guards/local-auth.guard';
+import { JwtAuthGuard } from './guards/jwt-auth-guard';
 
-class AuthDTO {
+export class AuthDTO {
 	username: string;
 	password: string;
+}
+
+// This DTO is a little dumb, but Nest doesn't like to read plaintext in a POST request, so the alternative is to parse the raw request body
+class HashDTO {
+	plaintextPassword: string;
 }
 
 @Controller('auth')
 export class AuthController {
 	constructor(private readonly authService: AuthService) {}
 
-	@HttpCode(HttpStatus.OK)
   	@Post('login')
-	async login(@Body() authDTO: AuthDTO): Promise<string> {
-		if (!!!authDTO.username || !!!authDTO.password) { throw new HttpException('Username or password is formatted incorrectly or missing', HttpStatus.BAD_REQUEST) }
-		return await this.authService.validateUser(authDTO.username, authDTO.password);
+	@UseGuards(LocalAuthGuard)
+	async login(@Body() authDTO: AuthDTO): Promise<object> {
+		return await this.authService.login(authDTO);
 	}
 
 	@Post('hash')
-	async hash(@Body() plaintextPassword: string): Promise<string> {
-		return await this.authService.createHash(plaintextPassword);
+	@UseGuards(JwtAuthGuard)
+	async hash(@Body() hashDTO: HashDTO): Promise<string> {
+		return await this.authService.createHash(hashDTO.plaintextPassword);
+	}
+
+	@Get('test')
+	@UseGuards(JwtAuthGuard)
+	tokenTest(): string {
+		return 'Token successfully authenticated!';
 	}
 }

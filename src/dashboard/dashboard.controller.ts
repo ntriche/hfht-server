@@ -1,11 +1,12 @@
-import { Controller, Get, Post, HttpStatus, HttpException, Body } from '@nestjs/common';
+import { Controller, Get, Post, Body, UseGuards } from '@nestjs/common';
 import { DashboardService } from './dashboard.service';
-import { LoggerService } from 'src/logger/logger.service';
 import { SubmissionDTO } from 'src/mongoDB/submissions/submissions.schema';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth-guard';
 
 @Controller('dashboard')
+@UseGuards(JwtAuthGuard)
 export class DashboardController {
-	constructor(private dashboardService: DashboardService, private log: LoggerService) {}
+	constructor(private dashboardService: DashboardService) {}
 
 	@Get('enqueue')
 	enqueue(): string {
