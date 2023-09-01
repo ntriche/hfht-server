@@ -48,12 +48,12 @@ export class DashboardService {
 				throw new HttpException('Invalid review status received', HttpStatus.BAD_REQUEST)
 			}
 		
-			// fetch submission from db that has this UUID
 			const db_sub: Submission = await this.submissionsService.findOne({'UUID':sub.UUID});
 			if (!!!db_sub) {
 				this.log.info("Rejected submission review POST request - could not find DB submission with UUID " + sub.UUID);
 				throw new HttpException('Invalid UUID ' + sub.UUID, HttpStatus.BAD_REQUEST)
 			}
+			// TODO: add a check to confirm status override, which currently always occurs
 			this.log.info(`Updating submission with UUID ${db_sub.UUID} and status ${db_sub.reviewStatus} to ${sub.reviewStatus}`)
 			this.submissionsService.findOneAndUpdate({'UUID':sub.UUID}, {'reviewStatus': sub.reviewStatus});
 		}
