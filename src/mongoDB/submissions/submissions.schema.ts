@@ -47,7 +47,7 @@ export class Submission {
 	}
 
 	@Prop()
-	userIP = '';
+	userIP: string = '';
  
 	@Prop()
 	timestampAtSubmission: Date;
