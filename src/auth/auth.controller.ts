@@ -17,7 +17,7 @@ class HashDTO {
 export class AuthController {
 	constructor(private readonly authService: AuthService) {}
 
-  	@Post('login')
+	@Post('login')
 	@HttpCode(200)
 	@UseGuards(LocalAuthGuard)
 	async login(@Body() authDTO: AuthDTO): Promise<object> {

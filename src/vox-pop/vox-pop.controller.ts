@@ -10,12 +10,12 @@ export class VoxPopController {
 	@Post()
 	@HttpCode(202) // 202 means accepted/received but not yet acted upon
 	async controllerPost(@Body() voxPopDTO: VoxPopDTO) {
-		if (!!!voxPopDTO || !!!voxPopDTO.submission) {
+		if (!voxPopDTO || !voxPopDTO.submission) {
 			this.log.info(`Rejected an invalid submission`);
 			throw new HttpException("Payload is of invalid type (must be JSON) or DTO is undefined", HttpStatus.BAD_REQUEST)
 		}
 		
-		let trace: string = ''
+		let trace = ''
 		if (this.voxPopService.validateIPv4(voxPopDTO.userIP)) {
 			trace += `New Vox Pop submission received from ${voxPopDTO.userIP} - `;
 		} else {
@@ -23,13 +23,13 @@ export class VoxPopController {
 		}
 
 		const msg = this.voxPopService.validateSubmissionLength(voxPopDTO.submission);
-		if (!!msg) {
+		if (msg) {
 			this.log.info(trace + "Rejecting new submission because it has an invalid length"); 
 			throw new HttpException("Submission has been rejected: " + msg, HttpStatus.BAD_REQUEST)
 		}
 
-		let newPop = new VoxPop(voxPopDTO);
-		if (!!newPop) {
+		const newPop = new VoxPop(voxPopDTO);
+		if (newPop) {
 			this.voxPopService.processNewVoxPop(newPop, trace);
 			return "Thank you for your submission!";
 		} else {

@@ -10,7 +10,7 @@ export class DashboardService {
 
 	getEnqueuedSubmissions(): string {
 		const voxPops = this.voxPopService.getEnqueuedSubmissions();
-		let msg = `Request received for enqueued submissions - `
+		const msg = `Request received for enqueued submissions - `
 		if (voxPops.length > 0) {
 			this.log.info(msg + `returning ${voxPops.length} enqueued submissions`);
 			return JSON.stringify(voxPops);
@@ -20,7 +20,7 @@ export class DashboardService {
 	}
 
 	async getUnreviewedSubmissions(): Promise<string> {
-		let msg = `Request received for un-reviewed submissions - `
+		const msg = `Request received for un-reviewed submissions - `
 		const reviewedSubmissions: Submission[] = await this.submissionsService.find({'reviewStatus': 0});
 		if (reviewedSubmissions.length > 0) {
 			this.log.info(msg + `returning ${reviewedSubmissions.length} un-reviewed submissions`);
@@ -31,7 +31,7 @@ export class DashboardService {
 	}
 
 	async handleReviewedSubmissions(submissions: SubmissionDTO[]): Promise<string> {
-		if (!!!submissions) {
+		if (!submissions) {
 			this.log.info('Received invalid POST request to handle reviewed submissions.');
 			throw new HttpException('Reviewed submissions are undefined, null, or generally fucked up', HttpStatus.BAD_REQUEST);
 		}
@@ -49,7 +49,7 @@ export class DashboardService {
 			}
 		
 			const db_sub: Submission = await this.submissionsService.findOne({'UUID':sub.UUID});
-			if (!!!db_sub) {
+			if (!db_sub) {
 				this.log.info("Rejected submission review POST request - could not find DB submission with UUID " + sub.UUID);
 				throw new HttpException('Invalid UUID ' + sub.UUID, HttpStatus.BAD_REQUEST)
 			}

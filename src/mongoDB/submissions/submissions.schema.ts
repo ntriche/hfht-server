@@ -33,21 +33,21 @@ export enum Quality {
 export type SubmissionDocument = HydratedDocument<Submission>;
 @Schema()
 export class Submission {
-	constructor(voxPop: VoxPop, reviewStatus: ReviewStatus = ReviewStatus.NotReviewed, timestampAtPost: Date = null, postID: string = '') {
-		if (!!voxPop.userIP) { this.userIP = voxPop.userIP; }
-		if (!!voxPop.timestamp) { this.timestampAtSubmission = voxPop.timestamp; }
-		if (!!voxPop.submissions) { this.submissions = voxPop.submissions; }
-		if (!!voxPop.UUID) { this.UUID = voxPop.UUID; }
+	constructor(voxPop: VoxPop, reviewStatus: ReviewStatus = ReviewStatus.NotReviewed, timestampAtPost: Date = null, postID = '') {
+		if (voxPop.userIP) { this.userIP = voxPop.userIP; }
+		if (voxPop.timestamp) { this.timestampAtSubmission = voxPop.timestamp; }
+		if (voxPop.submissions) { this.submissions = voxPop.submissions; }
+		if (voxPop.UUID) { this.UUID = voxPop.UUID; }
 		
 		this.reviewStatus = reviewStatus;
-		if (!!timestampAtPost) { this.timestampAtPost = timestampAtPost; }
-		if (!!postID) { this.postID = postID; }
+		if (timestampAtPost) { this.timestampAtPost = timestampAtPost; }
+		if (postID) { this.postID = postID; }
 
 		this.quality = Quality.None;
 	}
 
 	@Prop()
-	userIP: string = '';
+	userIP = '';
  
 	@Prop()
 	timestampAtSubmission: Date;

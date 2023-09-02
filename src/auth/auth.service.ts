@@ -7,7 +7,7 @@ import { User } from 'src/mongoDB/users/user.schema';
 import { AuthDTO } from './auth.controller';
 import { jwtConstants } from './constants';
 
-const saltRounds: number = 10;
+const saltRounds = 10;
 
 @Injectable()
 export class AuthService {
@@ -41,7 +41,7 @@ export class AuthService {
   }
 
   async createHash(plaintextPassword: string): Promise<string> {
-    if (!!!plaintextPassword) {
+    if (!plaintextPassword) {
       throw new HttpException('String is falsy', HttpStatus.BAD_REQUEST);
     }
     return await hash(plaintextPassword, saltRounds);

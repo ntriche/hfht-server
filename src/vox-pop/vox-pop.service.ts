@@ -14,7 +14,7 @@ export class VoxPopService {
 	// or maybe this should come later in the process to prevent slow down from disk operations
 	// could query if posts are duplicates when the dashboard requests all posts in queue
 	public enqueuePost(voxPop: VoxPop): number {
-		let sub = voxPop.getMostRecentSubmission();
+		const sub = voxPop.getMostRecentSubmission();
 
 		this.log.info(`Enqueuing submission: "${sub}"`);
 
@@ -50,7 +50,7 @@ export class VoxPopService {
 	}
 
 	// TODO: If I care about IP addresses, this regex needs work. This regular expression will give false positives.
-	private ipv4_regex: RegExp = /[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}/;
+	private ipv4_regex = /[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}/;
 	public validateIPv4(userIP: string): boolean {
 		return this.ipv4_regex.test(userIP);
 	}
