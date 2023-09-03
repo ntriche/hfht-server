@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { LoggerService } from 'src/logger/logger.service';
-import { VoxPop } from 'src/vox-pop/vox-pop.class';
-import { CONSUMER_KEY, CONSUMER_SECRET, TOKEN, TOKEN_SECRET } from 'env';
+// import { LoggerService } from 'src/logger/logger.service';
+// import { VoxPop } from 'src/vox-pop/vox-pop.class';
+// import { CONSUMER_KEY, CONSUMER_SECRET, TOKEN, TOKEN_SECRET } from 'env';
 
 @Injectable()
 export class TumblrService {

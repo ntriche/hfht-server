@@ -1,7 +1,8 @@
 import { Body, Controller, HttpCode, HttpException, HttpStatus, Post } from '@nestjs/common';
 import { VoxPopService } from './vox-pop.service';
 import { LoggerService } from '../logger/logger.service';
-import { VoxPopDTO, VoxPop } from './vox-pop.class';
+import { VoxPop } from './vox-pop.class';
+import { VoxPopDTO } from './vox-pop.dto';
 
 @Controller('vox-pop')
 export class VoxPopController {

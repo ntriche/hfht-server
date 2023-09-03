@@ -1,9 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-
-export class VoxPopDTO {
-	public userIP: string;
-	public submission: string;
-}
+import { VoxPopDTO } from './vox-pop.dto';
 
 export class VoxPop {
 	public userIP: string;

@@ -1,34 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 import { VoxPop } from 'src/vox-pop/vox-pop.class';
-
-export class SubmissionDTO {
-	userIP: string;
-	timestampAtSubmission: Date;
-	submissions: string[];
-	UUID: string;
-	reviewStatus: ReviewStatus;
-	timestampAtPost: Date;
-	postID: string;
-	quality: Quality;
-}
-
-export enum ReviewStatus {
-	NotReviewed = 0,
-	Denied,
-	Approved,
-	SuperApproved,
-}
-
-export enum Quality {
-	None = 0,
-	Poor,
-	Common,
-	Uncommon,
-	Rare,
-	Epic,
-	Legendary,
-}
+import { ReviewStatus, Quality } from './submission.enums';
 
 export type SubmissionDocument = HydratedDocument<Submission>;
 @Schema()
