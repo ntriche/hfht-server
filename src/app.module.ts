@@ -7,6 +7,7 @@ import { UsersModule } from './users/users.module';
 import { SubmissionsModule } from './submissions/submissions.module';
 import { TumblrModule } from './tumblr/tumblr.module';
 import { LoggerModule } from './logger/logger.module';
+import { ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
 	imports: [
@@ -17,6 +18,10 @@ import { LoggerModule } from './logger/logger.module';
 		TumblrModule,
 		LoggerModule,
 		MongooseModule.forRoot('mongodb://127.0.0.1:27017/hfht'),
+		ThrottlerModule.forRoot([{
+			ttl: 60,
+			limit: 10,
+		}]),
 	],
 	providers: [LoggerService],
 })

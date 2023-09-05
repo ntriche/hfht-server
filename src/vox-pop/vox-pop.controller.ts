@@ -4,6 +4,7 @@ import { VoxPopDTO } from './vox-pop.dto';
 import { ThrottlerGuard } from '@nestjs/throttler';
 
 @Controller('vox-pop')
+@UseGuards(ThrottlerGuard)
 export class VoxPopController {
 	constructor(
 		private voxPopService: VoxPopService
