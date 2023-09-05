@@ -6,7 +6,7 @@ import { ReviewStatus, Quality } from './submission.enums';
 export type SubmissionDocument = HydratedDocument<Submission>;
 @Schema()
 export class Submission {
-	constructor(voxPop: VoxPop, reviewStatus: ReviewStatus = ReviewStatus.NotReviewed, timestampAtPost: Date = null, postID = '') {
+	constructor(voxPop: VoxPop, reviewStatus: ReviewStatus = ReviewStatus.Unreviewed, timestampAtPost: Date = null, postID = '') {
 		if (voxPop.userIP) { this.userIP = voxPop.userIP; }
 		if (voxPop.timestamp) { this.timestampAtSubmission = voxPop.timestamp; }
 		if (voxPop.submissions) { this.submissions = voxPop.submissions; }

@@ -1,5 +1,5 @@
 export enum ReviewStatus {
-	NotReviewed = 0,
+	Unreviewed = 0,
 	Denied,
 	Approved,
 	SuperApproved,

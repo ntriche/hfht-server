@@ -1,4 +1,4 @@
-import { ReviewStatus, Quality } from "./submission.enums";
+import { ReviewStatus, Quality } from "../submission.enums";
 
 export class SubmissionDTO {
 	userIP: string;
