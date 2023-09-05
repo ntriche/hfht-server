@@ -1,47 +1,42 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
-import { VoxPop } from 'src/vox-pop/vox-pop.class';
 import { ReviewStatus, Quality } from './submission.enums';
+import { VoxPopDTO } from 'src/vox-pop/vox-pop.dto';
+import { v4 as uuidv4 } from 'uuid';
 
 export type SubmissionDocument = HydratedDocument<Submission>;
 @Schema()
 export class Submission {
-	constructor(voxPop: VoxPop, reviewStatus: ReviewStatus = ReviewStatus.Unreviewed, timestampAtPost: Date = null, postID = '') {
-		if (voxPop.userIP) { this.userIP = voxPop.userIP; }
-		if (voxPop.timestamp) { this.timestampAtSubmission = voxPop.timestamp; }
-		if (voxPop.submissions) { this.submissions = voxPop.submissions; }
-		if (voxPop.UUID) { this.UUID = voxPop.UUID; }
-		
-		this.reviewStatus = reviewStatus;
-		if (timestampAtPost) { this.timestampAtPost = timestampAtPost; }
-		if (postID) { this.postID = postID; }
-
-		this.quality = Quality.None;
+	constructor(voxPopDTO: VoxPopDTO, userIP: string) {
+		this.submissions[0] = voxPopDTO.submission;
+		this.userIP = userIP;
+		this.timestampAtSubmission = new Date;
+		this.UUID = uuidv4();
 	}
 
 	@Prop()
 	userIP: string = '';
+
+	@Prop()
+	UUID: string;
  
 	@Prop()
 	timestampAtSubmission: Date;
 
 	@Prop()
-	submissions: string[];
-
-	@Prop()
-	UUID: string;
-
-	@Prop()
-	reviewStatus: ReviewStatus;
+	postID: string;
 
 	@Prop()
 	timestampAtPost: Date;
 
 	@Prop()
-	postID: string;
+	submissions: Array<string>;
 
 	@Prop()
-	quality: Quality;
+	reviewStatus: ReviewStatus = ReviewStatus.Unreviewed;
+
+	@Prop()
+	quality: Quality = Quality.None;
 }
 
 export const SubmissionSchema = SchemaFactory.createForClass(Submission);
