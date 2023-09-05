@@ -1,12 +1,8 @@
-import { Body, Controller, Post, UseGuards, Get, HttpCode } from '@nestjs/common';
+import { Body, Controller, Post, UseGuards, Get, HttpCode, Request } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { LocalAuthGuard } from './guards/local-auth.guard';
 import { JwtAuthGuard } from './guards/jwt-auth-guard';
-
-export class AuthDTO {
-	username: string;
-	password: string;
-}
+import { LocalAuthGuard } from './guards/local-auth.guard';
+import { AuthDTO } from './dto/auth.dto';
 
 // This DTO is a little dumb, but Nest doesn't like to read plaintext in a POST request, so the alternative is to parse the raw request body
 class HashDTO {
@@ -15,7 +11,9 @@ class HashDTO {
 
 @Controller('auth')
 export class AuthController {
-	constructor(private readonly authService: AuthService) {}
+	constructor(
+		private readonly authService: AuthService
+	) {}
 
 	@Post('login')
 	@HttpCode(200)
