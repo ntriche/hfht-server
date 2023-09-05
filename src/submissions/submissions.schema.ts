@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 import { ReviewStatus, Quality } from './submission.enums';
-import { VoxPopDTO } from 'src/vox-pop/vox-pop.dto';
+import { VoxPopDTO } from 'src/vox-pop/dto/vox-pop.dto';
 import { v4 as uuidv4 } from 'uuid';
 
 export type SubmissionDocument = HydratedDocument<Submission>;

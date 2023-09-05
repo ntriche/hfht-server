@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { SubmissionsService } from 'src/submissions/submissions.service';
 import { LoggerService } from '../logger/logger.service';
 import { Submission } from 'src/submissions/submissions.schema';
-import { VoxPopDTO } from './vox-pop.dto';
+import { VoxPopDTO } from './dto/vox-pop.dto';
 
 @Injectable()
 export class VoxPopService {

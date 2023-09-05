@@ -1,6 +1,6 @@
 import { Body, Controller, HttpCode, Ip, Post, UseGuards } from '@nestjs/common';
 import { VoxPopService } from './vox-pop.service';
-import { VoxPopDTO } from './vox-pop.dto';
+import { VoxPopDTO } from './dto/vox-pop.dto';
 import { ThrottlerGuard } from '@nestjs/throttler';
 
 @Controller('vox-pop')
