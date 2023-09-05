@@ -26,7 +26,7 @@ export class SubmissionsService {
 	) {}
 
 	async create(newSubmission: SubmissionDTO): Promise<Submission> {
-		console.log(newSubmission);
+		this.log.info(`Saving submission to DB`)
 		const createdSubmission = new this.submissionModel(newSubmission);
 		return createdSubmission.save();
 	}
