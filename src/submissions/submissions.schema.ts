@@ -8,6 +8,7 @@ export type SubmissionDocument = HydratedDocument<Submission>;
 @Schema()
 export class Submission {
 	constructor(voxPopDTO: VoxPopDTO, userIP: string) {
+		this.submissions = new Array<string>;
 		this.submissions[0] = voxPopDTO.submission;
 		this.userIP = userIP;
 		this.timestampAtSubmission = new Date;
@@ -15,7 +16,7 @@ export class Submission {
 	}
 
 	@Prop()
-	userIP: string = '';
+	userIP: string;
 
 	@Prop()
 	UUID: string;
