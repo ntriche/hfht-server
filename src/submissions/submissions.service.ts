@@ -43,7 +43,7 @@ export class SubmissionsService {
 		return this.submissionModel.findOneAndUpdate(query, submission);
 	}
 
-	async getSubmissions(type: ReviewStatus): Promise<string> {
+	async getSubmissions(type: ReviewStatus): Promise<Submission[]> {
 		const msg = `Request received for ${(type == null) ? 'all' : ReviewStatus[type]} submissions - `
 
 		let query: FilterQuery<Submission> = {};
@@ -54,7 +54,7 @@ export class SubmissionsService {
 		const reviewedSubmissions: Submission[] = await this.find(query);
 		if (reviewedSubmissions.length > 0) {
 			this.log.info(msg + `returning ${reviewedSubmissions.length} submissions`);
-			return JSON.stringify(reviewedSubmissions);
+			return reviewedSubmissions;
 		}
 
 		this.log.info(msg + `but no submissions were found.`);
