@@ -13,7 +13,7 @@ export class VoxPopService {
 
 	process(voxPopDTO: VoxPopDTO, ip: string): void {
 		voxPopDTO.submission = this.removeHTMLTags(voxPopDTO.submission);
-		this.log.info(`Creating a new submission with content ${voxPopDTO.submission.slice(0, 16)}`)
+		this.log.info(`Received new submission from ${ip}`)
 		this.submissionsService.create(new Submission(voxPopDTO, ip));
 	}
 
