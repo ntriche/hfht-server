@@ -1,34 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { SubmissionsService } from 'src/mongoDB/submissions/submissions.service';
+import { SubmissionsService } from 'src/submissions/submissions.service';
 import { LoggerService } from '../logger/logger.service';
 import { VoxPop } from './vox-pop.class';
-import { Submission } from 'src/mongoDB/submissions/submissions.schema';
+import { Submission } from 'src/submissions/submissions.schema';
 
 @Injectable()
 export class VoxPopService {
-	private enqueuedPosts: VoxPop[] = [];
-
-	constructor(private readonly submissionsService: SubmissionsService, private log: LoggerService) { }
-
-	// TODO: enqueue should make sure the post it is enqueuing hasn't already been posted by querying the DB
-	// or maybe this should come later in the process to prevent slow down from disk operations
-	// could query if posts are duplicates when the dashboard requests all posts in queue
-	public enqueuePost(voxPop: VoxPop): number {
-		const sub = voxPop.getMostRecentSubmission();
-
-		this.log.info(`Enqueuing submission: "${sub}"`);
-
-		// temporary
-		const newSubmission: Submission = new Submission(voxPop);
-		this.submissionsService.create(newSubmission);
-		this.log.info(`Writing submission to DB`);
-
-		return this.enqueuedPosts.push(voxPop);
-	}
-
-	public getEnqueuedSubmissions(): VoxPop[] {
-		return this.enqueuedPosts;
-	}
+	constructor(
+		private readonly submissionsService: SubmissionsService, 
+		private readonly log: LoggerService
+		) {}
 
 	processNewVoxPop(voxPop: VoxPop, trace: string): void {
 		const newSubmission: Submission = new Submission(voxPop);
