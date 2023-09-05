@@ -8,6 +8,8 @@ import { SubmissionsModule } from './submissions/submissions.module';
 import { TumblrModule } from './tumblr/tumblr.module';
 import { LoggerModule } from './logger/logger.module';
 import { ThrottlerModule } from '@nestjs/throttler';
+import { ScheduleModule } from '@nestjs/schedule';
+import { TasksService } from './tasks/tasks.service';
 
 @Module({
 	imports: [
@@ -22,7 +24,8 @@ import { ThrottlerModule } from '@nestjs/throttler';
 			ttl: 60,
 			limit: 10,
 		}]),
+		ScheduleModule.forRoot(),
 	],
-	providers: [LoggerService],
+	providers: [LoggerService, TasksService],
 })
 export class AppModule {}
