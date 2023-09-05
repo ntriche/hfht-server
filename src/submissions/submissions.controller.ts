@@ -1,4 +1,4 @@
-import { Controller, Get, Body, UseGuards, Put, Delete, Post, Query } from '@nestjs/common';
+import { Controller, Get, Body, UseGuards, Put, Delete, Post, Query, HttpStatus, HttpException } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth-guard';
 import { SubmissionDTO } from 'src/submissions/dto/submission.dto';
 import { DeleteManyDTO } from 'src/submissions/dto/deleteMany.dto';
@@ -18,13 +18,10 @@ export class SubmissionsController {
 	}
 
 	@Get()
-	async findOne(@Query('uuid') uuid: string) {
-		return this.submissionsService.findOne({'UUID': uuid});
-	}
-
-	@Get()
-	async findByReviewStatus(@Query('type') type: string): Promise<string> {
-		return this.submissionsService.getSubmissions(ReviewStatus[type]);
+	async find(@Query('uuid') uuid: string, @Query('type') type: string) {
+		if (uuid) { return this.submissionsService.findOne({'UUID': uuid}); }
+		if (type) { return this.submissionsService.getSubmissions(ReviewStatus[type]); }
+		throw new HttpException('give me a query string bro', HttpStatus.BAD_REQUEST);
 	}
 
 	@Put()
