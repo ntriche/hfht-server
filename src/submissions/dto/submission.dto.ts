@@ -1,4 +1,4 @@
-import { IsArray, IsDate, IsEnum, IsIP, IsUUID } from "class-validator";
+import { IsArray, IsDateString, IsEnum, IsIP, IsOptional, IsString, IsUUID } from "class-validator";
 import { ReviewStatus, Quality } from "../submission.enums";
 
 export class SubmissionDTO {
@@ -8,13 +8,15 @@ export class SubmissionDTO {
 	@IsUUID(4)
 	UUID: string;
 
-	@IsDate()
+	@IsDateString()
 	timestampAtSubmission: Date;
 
-	// Optional
+	@IsOptional()
+	@IsString()
 	postID: string;
-
-	@IsDate()
+	
+	@IsOptional()
+	@IsDateString()
 	timestampAtPost: Date;
 
 	@IsArray()
