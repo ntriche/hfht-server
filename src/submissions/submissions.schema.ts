@@ -33,10 +33,10 @@ export class Submission {
 	@Prop()
 	submissions: Array<string>;
 
-	@Prop()
+	@Prop({type: Number, enum: ReviewStatus})
 	reviewStatus: ReviewStatus = ReviewStatus.Unreviewed;
 
-	@Prop()
+	@Prop({type: Number, enum: Quality})
 	quality: Quality = Quality.None;
 }
 
