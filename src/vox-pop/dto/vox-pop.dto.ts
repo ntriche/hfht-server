@@ -1,4 +1,4 @@
-import { IsNotEmpty, MaxLength, MinLength } from "class-validator";
+import { MaxLength, MinLength } from "class-validator";
 
 export class VoxPopDTO {
 	@MinLength(2)
