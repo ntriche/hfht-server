@@ -5,6 +5,7 @@ import { Submission, SubmissionDocument } from './submissions.schema';
 import { SubmissionDTO } from './dto/submission.dto';
 import { ReviewStatus } from './submission.enums';
 import { LoggerService } from 'src/logger/logger.service';
+import { ReviewDTO } from './dto/review.dto';
 
 export class SubmissionResponse {
 	msg: string;
@@ -21,7 +22,7 @@ interface submissionUpdateInfo {
 export class SubmissionsService {
 	constructor(
 		@InjectModel(Submission.name) 
-		private submissionModel: Model<SubmissionDocument>,
+		private readonly submissionModel: Model<SubmissionDocument>,
 		private readonly log: LoggerService
 	) {}
 
