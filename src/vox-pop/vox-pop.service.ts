@@ -9,7 +9,7 @@ export class VoxPopService {
 	constructor(
 		private readonly submissionsService: SubmissionsService, 
 		private readonly log: LoggerService,
-		) {}
+	) {}
 
 	process(voxPopDTO: VoxPopDTO, ip: string): void {
 		voxPopDTO.submission = this.removeHTMLTags(voxPopDTO.submission);
