@@ -17,6 +17,8 @@ export class AuthService {
     private readonly log: LoggerService
   ) {}
 
+  // local auth guard first calls validate in file local.strategy, which then calls this function
+  // if successful, control goes back to the controller, which calls the login function underneath here
   async validateUser(username: string, plaintextPassword: string): Promise<any> {
     const user: User = await this.usersService.findOne( {'username':username} );
     if (user && await compare(plaintextPassword, user.password)) {
