@@ -61,52 +61,20 @@ export class SubmissionsService {
 		throw new HttpException(`No valid submissions available`, HttpStatus.NOT_FOUND);
 	}
 
-	async handleReview(submissions: SubmissionDTO[]): Promise<SubmissionResponse> {
-		if (!submissions) {
-			this.log.info('Received invalid POST request to handle reviewed submissions.');
-			throw new HttpException('Reviewed submissions are undefined, null, or generally fucked up', HttpStatus.BAD_REQUEST);
-		}
+	async updateMany(reviewedSubmissions: ReviewDTO): Promise<SubmissionResponse> {
+		//this.log.info(`Request received to update ${reviewedSubmissions.length} reviewed submissions.`)
 		
-		this.log.info(`Request received to update ${submissions.length} reviewed submissions.`)
-		// TODO: consider if I really want this to fail completely if a single reviewed submission is rejected
-		// for now it's kind of a good check that everything is working as intended
-		let updated: number = 0;
-		let updateInfo: submissionUpdateInfo[] = new Array<submissionUpdateInfo>;
-		for (const reviewed_sub of submissions) {
-			if (reviewed_sub.reviewStatus == ReviewStatus.Unreviewed) {
-				this.log.info("Rejected submission review POST request - un-viewed submission received.");
-				throw new HttpException('Un-reviewed submission received! Do not submit un-reviewed submissions!', HttpStatus.BAD_REQUEST)
-			}
-		
-			if (reviewed_sub.reviewStatus > 3) {
-				this.log.info("Rejected submission review POST request - invalid review status received.");
-				throw new HttpException('Invalid review status received', HttpStatus.BAD_REQUEST)
-			}
-		
-			const db_sub: Submission = await this.findOne({'UUID':reviewed_sub.UUID});
-			if (!db_sub) {
-				this.log.info("Rejected submission review POST request - could not find DB submission with UUID " + reviewed_sub.UUID);
-				throw new HttpException('Invalid UUID ' + reviewed_sub.UUID, HttpStatus.BAD_REQUEST)
-			}
+		//for (const reviewedSub of reviewedSubmissions) {
+			// const databaseSub: Submission = await this.findOne({'UUID': reviewedSub.UUID});
+			// if (!databaseSub) {
+			// 	this.log.info("Rejected submission update request - could not find DB submission with UUID " + reviewedSub.UUID);
+			// 	throw new HttpException('Invalid UUID ' + reviewedSub.UUID, HttpStatus.BAD_REQUEST)
+			// }
+		//}
 
-			// TODO: add a check to confirm status override, which currently always occurs
-			if (reviewed_sub.reviewStatus != db_sub.reviewStatus) {
-				this.findOneAndUpdate({'UUID':reviewed_sub.UUID}, {'reviewStatus': reviewed_sub.reviewStatus});
-				updated++;
-			}
-
-			updateInfo.push({
-				UUID: db_sub.UUID,
-				oldStatus: db_sub.reviewStatus,
-				newStatus: reviewed_sub.reviewStatus
-			});
-		}
-
-		const msg: string = `Processed ${updateInfo.length}, updated ${updated}`;
-		this.log.info(msg)
 		return {
-			msg: msg,
-			info: updateInfo, 
+			msg: 'lol',
+			info: null
 		};
 	}
 

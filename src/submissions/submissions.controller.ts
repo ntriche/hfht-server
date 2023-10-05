@@ -4,6 +4,7 @@ import { SubmissionDTO } from 'src/submissions/dto/submission.dto';
 import { DeleteManyDTO } from 'src/submissions/dto/deleteMany.dto';
 import { SubmissionResponse, SubmissionsService } from './submissions.service';
 import { ReviewStatus } from './submission.enums';
+import { ReviewDTO } from './dto/review.dto';
 
 @Controller('submissions')
 @UseGuards(JwtAuthGuard)
@@ -25,8 +26,8 @@ export class SubmissionsController {
 	}
 
 	@Put()
-	async submitReview(@Body() submissionsDTO: SubmissionDTO[]): Promise<SubmissionResponse> {
-		return this.submissionsService.handleReview(submissionsDTO);
+	async updateMany(@Body() reviewDTO: ReviewDTO): Promise<SubmissionResponse> {
+		return this.submissionsService.updateMany(reviewDTO);
 	}
 
 	@Post('delete')
