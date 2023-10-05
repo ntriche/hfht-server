@@ -43,8 +43,9 @@ export class SubmissionsService {
 		return this.submissionModel.findOneAndUpdate(query, submission);
 	}
 
+	// TODO: preserve this functionality, but wrap it into find() instead
 	async getSubmissions(type: ReviewStatus): Promise<Submission[]> {
-		const msg = `Request received for ${(type == null) ? 'all' : ReviewStatus[type]} submissions - `
+		const msg = `Request received for ${type ? 'all' : ReviewStatus[type]} submissions - `
 
 		let query: FilterQuery<Submission> = {};
 		if (type in ReviewStatus) {
