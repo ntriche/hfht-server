@@ -4,8 +4,8 @@ import { UsersService } from '../users/users.service';
 import { LoggerService } from 'src/logger/logger.service';
 import { JwtService } from '@nestjs/jwt';
 import { User } from 'src/users/user.schema';
-import { jwtConstants } from './constants';
 import { AuthDTO } from './dto/auth.dto';
+import { JWT_CONSTANTS } from 'env/security';
 
 const saltRounds = 10;
 
@@ -34,7 +34,7 @@ export class AuthService {
     const payload = { 
       username: authDTO.username,
       sub: authDTO.username,
-      iss: jwtConstants.issuer,
+      iss: JWT_CONSTANTS.ISSUER,
     };
 
     return {
