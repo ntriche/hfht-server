@@ -23,11 +23,13 @@ export class SubmissionsService {
 	constructor(
 		@InjectModel(Submission.name) 
 		private readonly submissionModel: Model<SubmissionDocument>,
-		private readonly log: HfhtLoggerService
-	) {}
+		private logger: HfhtLoggerService
+	) {
+		this.logger.setContext(SubmissionsService.name)
+	}
 
 	async create(newSubmission: SubmissionDTO): Promise<Submission> {
-		this.log.info(`Saving submission to DB`)
+		this.logger.log(`Saving submission to DB`)
 		const createdSubmission = new this.submissionModel(newSubmission);
 		return createdSubmission.save();
 	}
@@ -55,11 +57,11 @@ export class SubmissionsService {
 
 		const reviewedSubmissions: Submission[] = await this.find(query);
 		if (reviewedSubmissions.length > 0) {
-			this.log.info(msg + `returning ${reviewedSubmissions.length} submissions`);
+			this.logger.log(msg + `returning ${reviewedSubmissions.length} submissions`);
 			return reviewedSubmissions;
 		}
 
-		this.log.info(msg + `but no submissions were found.`);
+		this.logger.log(msg + `but no submissions were found.`);
 		throw new HttpException(`No valid submissions available`, HttpStatus.NOT_FOUND);
 	}
 

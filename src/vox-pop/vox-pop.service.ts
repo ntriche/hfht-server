@@ -8,12 +8,14 @@ import { VoxPopDTO } from './dto/vox-pop.dto';
 export class VoxPopService {
 	constructor(
 		private readonly submissionsService: SubmissionsService, 
-		private readonly log: HfhtLoggerService,
-	) {}
+		private logger: HfhtLoggerService,
+	) {
+		this.logger.setContext(VoxPopService.name)
+	}
 
 	process(voxPopDTO: VoxPopDTO, ip: string): void {
 		voxPopDTO.submission = this.removeHTMLTags(voxPopDTO.submission);
-		this.log.info(`Received new submission from ${ip}`)
+		this.logger.log(`Received new submission from ${ip}`)
 		this.submissionsService.create(new Submission(voxPopDTO, ip));
 	}
 

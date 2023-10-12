@@ -7,14 +7,12 @@ import { HfhtLoggerService } from './logger/hfht.logger.service';
 declare const module: any;
 
 async function bootstrap() {
-	const app = await NestFactory.create(AppModule, {
-		bufferLogs: true,
-	});
-	app.useLogger(app.get(HfhtLoggerService))
-	const log = app.get(HfhtLoggerService);
+	const app = await NestFactory.create(AppModule);
+	app.useLogger(new HfhtLoggerService())
 
 	const configService = app.get(ConfigService);
-	log.debug(`starting in ${configService.get<string>("NODE_ENV")}`)
+	const log = await app.resolve(HfhtLoggerService);
+	log.debug(`application startup environment: ${configService.get<string>("NODE_ENV")}`)
 
 	app.useGlobalPipes(
 		new ValidationPipe({

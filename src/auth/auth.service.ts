@@ -14,8 +14,10 @@ export class AuthService {
   constructor(
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService, 
-    private readonly log: HfhtLoggerService
-  ) {}
+    private logger: HfhtLoggerService
+  ) {
+    this.logger.setContext(AuthService.name)
+  }
 
   // local auth guard first calls validate in file local.strategy, which then calls this function
   // if successful, control goes back to the controller, which calls the login function underneath here
@@ -26,7 +28,7 @@ export class AuthService {
       return result;
     }
     
-    this.log.info(`User ${username} failed to authenticate.`)
+    this.logger.warn(`User ${username} failed to authenticate.`)
     return null;
   }
 

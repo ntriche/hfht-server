@@ -7,9 +7,11 @@ import { AuthController } from './auth.controller';
 import { LocalStrategy } from './guards/local.strategy';
 import { JwtStrategy } from './guards/jwt.strategy';
 import { JWT_CONSTANTS } from 'env/security';
+import { HfhtLoggerModule } from 'src/logger/hfht.logger.module';
 
 @Module({
 	imports: [
+		HfhtLoggerModule,
 		UsersModule, 
 		PassportModule, 
 		JwtModule.register({

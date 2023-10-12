@@ -6,9 +6,11 @@ import { TumblrService } from 'src/tumblr/tumblr.service';
 @Injectable()
 export class TasksService {
     constructor(
-		private readonly log: HfhtLoggerService,
+		private logger: HfhtLoggerService,
         private readonly tumblrService: TumblrService,
-    ) {}
+    ) {
+        this.logger.setContext(TasksService.name)
+    }
 
     @Cron(CronExpression.EVERY_HOUR)
     fetchTumblrInbox() {
