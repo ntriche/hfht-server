@@ -19,10 +19,13 @@ export class SubmissionsController {
 	}
 
 	@Get()
-	async find(@Query('uuid') uuid: string, @Query('type') type: string) {
-		if (uuid) { return this.submissionsService.findOne({'UUID': uuid}); }
-		if (type) { return this.submissionsService.getSubmissions(ReviewStatus[type]); }
-		throw new HttpException('give me a query string bro', HttpStatus.BAD_REQUEST);
+	async findOne(@Query('uuid') uuid: string) {
+		return this.submissionsService.findOne({'UUID': uuid})
+	}
+
+	@Get()
+	async findMany(@Query('type') type: string) {
+		return this.submissionsService.getSubmissions(ReviewStatus[type]);
 	}
 
 	@Put()
