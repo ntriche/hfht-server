@@ -10,6 +10,7 @@ import { HfhtLoggerModule } from './logger/hfht.logger.module';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { ScheduleModule } from '@nestjs/schedule';
 import { TasksService } from './tasks/tasks.service';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
 	imports: [
@@ -24,6 +25,10 @@ import { TasksService } from './tasks/tasks.service';
 			limit: 10,
 		}]),
 		ScheduleModule.forRoot(),
+		ConfigModule.forRoot({
+			envFilePath: ['env/local.env', 'env/development.env', 'production.env'],
+			isGlobal: true
+		})
 	],
 	providers: [HfhtLoggerService, TasksService],
 })
