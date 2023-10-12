@@ -1,5 +1,5 @@
 
-import { Injectable, NestInterceptor, ExecutionContext, CallHandler, HttpException, HttpStatus, Logger, BadRequestException } from '@nestjs/common';
+import { Injectable, NestInterceptor, ExecutionContext, CallHandler, HttpException, HttpStatus } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { HfhtLoggerService } from 'src/logger/hfht.logger.service';
