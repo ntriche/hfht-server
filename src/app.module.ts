@@ -20,6 +20,13 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 		AuthModule, 
 		TumblrModule,
 		HfhtLoggerModule,
+		MongooseModule.forRootAsync({
+			imports: [ConfigModule],
+			useFactory: (configService: ConfigService) => ({
+				uri: `${configService.get<string>('DATABASE_URL')}`,
+			}),
+			inject: [ConfigService],
+		}),
 		ThrottlerModule.forRoot([{
 			ttl: 60,
 			limit: 10,
