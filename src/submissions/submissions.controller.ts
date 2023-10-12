@@ -9,9 +9,7 @@ import { ReviewDTO } from './dto/review.dto';
 @Controller('submissions')
 @UseGuards(JwtAuthGuard)
 export class SubmissionsController {
-	constructor(
-		private readonly submissionsService: SubmissionsService
-	) {}
+	constructor(private readonly submissionsService: SubmissionsService) {}
 
 	@Post()
 	async create(@Body() submissionDTO: SubmissionDTO): Promise<SubmissionDTO> {
