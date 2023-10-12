@@ -35,6 +35,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 			isGlobal: true
 		})
 	],
-	providers: [HfhtLoggerService, TasksService],
+	providers: [],
 })
 export class AppModule {}
