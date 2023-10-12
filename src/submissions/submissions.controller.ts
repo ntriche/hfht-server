@@ -1,13 +1,15 @@
-import { Controller, Get, Body, UseGuards, Put, Delete, Post, Query, HttpStatus, HttpException } from '@nestjs/common';
+import { Controller, Get, Body, UseGuards, Put, Delete, Post, Query, HttpStatus, HttpException, UseInterceptors } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth-guard';
 import { SubmissionDTO } from 'src/submissions/dto/submission.dto';
 import { DeleteManyDTO } from 'src/submissions/dto/deleteMany.dto';
 import { SubmissionResponse, SubmissionsService } from './submissions.service';
 import { ReviewStatus } from './submission.enums';
 import { ReviewDTO } from './dto/review.dto';
+import { SubmissionsInterceptor } from './submissions.interceptor';
 
 @Controller('submissions')
 @UseGuards(JwtAuthGuard)
+@UseInterceptors(SubmissionsInterceptor)
 export class SubmissionsController {
 	constructor(private readonly submissionsService: SubmissionsService) {}
 

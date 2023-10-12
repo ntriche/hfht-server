@@ -4,6 +4,7 @@ import { Submission, SubmissionSchema } from './submissions.schema';
 import { SubmissionsService } from './submissions.service';
 import { SubmissionsController } from './submissions.controller';
 import { HfhtLoggerModule } from 'src/logger/hfht.logger.module';
+import { SubmissionsInterceptor } from './submissions.interceptor';
 
 @Module({
 	imports: [
@@ -11,7 +12,7 @@ import { HfhtLoggerModule } from 'src/logger/hfht.logger.module';
 		MongooseModule.forFeature([{ name: Submission.name, schema: SubmissionSchema }])
 	],
 	controllers: [SubmissionsController],
-	providers: [SubmissionsService],
+	providers: [SubmissionsService, SubmissionsInterceptor],
 	exports: [SubmissionsService],
 })
 export class SubmissionsModule {}
