@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { SubmissionsService } from 'src/submissions/submissions.service';
-import { LoggerService } from '../logger/logger.service';
+import { HfhtLoggerService } from '../logger/hfht.logger.service';
 import { Submission } from 'src/submissions/submissions.schema';
 import { VoxPopDTO } from './dto/vox-pop.dto';
 
@@ -8,7 +8,7 @@ import { VoxPopDTO } from './dto/vox-pop.dto';
 export class VoxPopService {
 	constructor(
 		private readonly submissionsService: SubmissionsService, 
-		private readonly log: LoggerService,
+		private readonly log: HfhtLoggerService,
 	) {}
 
 	process(voxPopDTO: VoxPopDTO, ip: string): void {

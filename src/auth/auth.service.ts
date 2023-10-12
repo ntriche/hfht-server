@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { compare, hash } from 'bcrypt';
 import { UsersService } from '../users/users.service';
-import { LoggerService } from 'src/logger/logger.service';
+import { HfhtLoggerService } from 'src/logger/hfht.logger.service';
 import { JwtService } from '@nestjs/jwt';
 import { User } from 'src/users/user.schema';
 import { AuthDTO } from './dto/auth.dto';
@@ -14,7 +14,7 @@ export class AuthService {
   constructor(
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService, 
-    private readonly log: LoggerService
+    private readonly log: HfhtLoggerService
   ) {}
 
   // local auth guard first calls validate in file local.strategy, which then calls this function

@@ -1,7 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { ConsoleLogger, Injectable } from '@nestjs/common';
 
 @Injectable()
-export class LoggerService {
+export class HfhtLoggerService extends ConsoleLogger {
 	private logs: string[] = [];
 
 	createMessageBase(): string {
@@ -26,10 +26,8 @@ export class LoggerService {
 		console.log(msg);
 	}
 
-	error(msg: string) {
-		msg = this.createMessageBase() + '[ERR] ' + msg;
-		this.logs.push(msg);
-		console.log(msg);
+	error(message: any, stack?: string, context?: string) {
+		super.error(message, stack, context);
 	}
 
 	public text_colors: Record<string, string> = {
