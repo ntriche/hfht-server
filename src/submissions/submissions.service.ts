@@ -4,7 +4,7 @@ import { FilterQuery, Model } from 'mongoose';
 import { Submission, SubmissionDocument } from './submissions.schema';
 import { SubmissionDTO } from './dto/submission.dto';
 import { ReviewStatus } from './submission.enums';
-import { LoggerService } from 'src/logger/logger.service';
+import { HfhtLoggerService } from 'src/logger/hfht.logger.service';
 import { ReviewDTO } from './dto/review.dto';
 
 export class SubmissionResponse {
@@ -23,7 +23,7 @@ export class SubmissionsService {
 	constructor(
 		@InjectModel(Submission.name) 
 		private readonly submissionModel: Model<SubmissionDocument>,
-		private readonly log: LoggerService
+		private readonly log: HfhtLoggerService
 	) {}
 
 	async create(newSubmission: SubmissionDTO): Promise<Submission> {
