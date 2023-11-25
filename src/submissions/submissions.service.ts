@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { FilterQuery, Model } from 'mongoose';
+import { FilterQuery, Model, ProjectionType, QueryOptions, UpdateQuery } from 'mongoose';
 import { Submission, SubmissionDocument } from './submissions.schema';
 import { SubmissionDTO } from './dto/submission.dto';
 import { ReviewStatus } from './submission.enums';
@@ -38,8 +38,9 @@ export class SubmissionsService {
 		return this.submissionModel.find(query);
 	}
 
-	async findOne(query: FilterQuery<Submission>): Promise<Submission> {
-		return this.submissionModel.findOne(query);
+	async findOne(query: FilterQuery<Submission>, projection?: ProjectionType<Submission>): Promise<Submission> {
+		this.logger.log('Querying DB for submission');
+		return this.submissionModel.findOne(query, projection);
 	}
 
 	async findOneAndUpdate(query: FilterQuery<Submission>, submission: Partial<Submission>): Promise<Submission> {
@@ -65,16 +66,22 @@ export class SubmissionsService {
 		throw new HttpException(`No valid submissions available`, HttpStatus.NOT_FOUND);
 	}
 
-	async updateMany(reviewedSubmissions: ReviewDTO): Promise<SubmissionResponse> {
-		//this.log.info(`Request received to update ${reviewedSubmissions.length} reviewed submissions.`)
-		
-		//for (const reviewedSub of reviewedSubmissions) {
-			// const databaseSub: Submission = await this.findOne({'UUID': reviewedSub.UUID});
+	async updateOne(uuid: string, update: UpdateQuery<Submission>): Promise<any> {
+		return this.submissionModel.updateOne({'UUID':uuid}, update);
+	}
+
+	async updateMany(reviewedSubmissions: ReviewDTO[]): Promise<SubmissionResponse> {
+		this.logger.log(`Request received to update ${reviewedSubmissions.length} reviewed submission(s).`);
+		for (const reviewedSub of reviewedSubmissions) {
+			console.log(reviewedSub)
+			// let databaseSub: Submission = await this.findOne({'UUID': reviewedSub.UUID}, {'_id': false, '__v': false});
 			// if (!databaseSub) {
-			// 	this.log.info("Rejected submission update request - could not find DB submission with UUID " + reviewedSub.UUID);
-			// 	throw new HttpException('Invalid UUID ' + reviewedSub.UUID, HttpStatus.BAD_REQUEST)
+			// 	this.logger.log("Rejected submission update request - could not find submission with UUID " + reviewedSub.UUID);
+			// 	throw new HttpException('Resource not found', HttpStatus.BAD_REQUEST)
 			// }
-		//}
+			// databaseSub = Object.assign(databaseSub, reviewedSub)
+			const result = await this.findOneAndUpdate({'UUID': reviewedSub.UUID}, reviewedSub);
+		}
 
 		return {
 			msg: 'lol',

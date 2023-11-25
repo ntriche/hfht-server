@@ -1,4 +1,4 @@
-import { Controller, Get, Body, UseGuards, Put, Delete, Post, Query, HttpStatus, HttpException, UseInterceptors } from '@nestjs/common';
+import { Controller, Get, Body, UseGuards, Put, Delete, Post, Query, UseInterceptors, Patch, Param, HttpException, HttpStatus } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth-guard';
 import { SubmissionDTO } from 'src/submissions/dto/submission.dto';
 import { DeleteManyDTO } from 'src/submissions/dto/deleteMany.dto';
@@ -19,6 +19,18 @@ export class SubmissionsController {
 	}
 
 	@Get()
+	async test(@Query() query: object) {
+		console.log((query));
+		// for (const q in query) {
+		// 	if (!(q in SubmissionDTO)) {
+		// 		console.log(q);
+		// 		throw new HttpException(`Invalid param ${q}`, HttpStatus.BAD_REQUEST);
+		// 	}
+		// }
+		return this.submissionsService.findOne(query);
+	}
+
+	@Get()
 	async findOne(@Query('uuid') uuid: string) {
 		return this.submissionsService.findOne({'UUID': uuid})
 	}
@@ -28,8 +40,13 @@ export class SubmissionsController {
 		return this.submissionsService.getSubmissions(ReviewStatus[type]);
 	}
 
+	@Patch()
+	async updateOne(@Query('uuid') uuid: string, @Body() reviewDTO: ReviewDTO): Promise<SubmissionResponse> {
+		return this.submissionsService.updateOne(uuid, reviewDTO);
+	}
+
 	@Put()
-	async updateMany(@Body() reviewDTO: ReviewDTO): Promise<SubmissionResponse> {
+	async updateMany(@Body() reviewDTO: ReviewDTO[]): Promise<SubmissionResponse> {
 		return this.submissionsService.updateMany(reviewDTO);
 	}
 
