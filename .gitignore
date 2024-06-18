@@ -401,3 +401,6 @@ constants.ts
 dist
 
 *.txt
+
+# turbo
+.turbo/*
