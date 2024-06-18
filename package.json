@@ -1,5 +1,5 @@
 {
-  "name": "hfht-server",
+  "name": "hfht-backend",
   "private": true,
   "version": "1.0.0",
   "description": "server for birds",
@@ -15,6 +15,12 @@
     "format":       "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "lint":         "eslint \"{src,apps,libs,test}/**/*.ts\"",
     "lint-fix":     "eslint \"{src,apps,libs,test}/**/*.ts\" --fix"
+  },
+  "exports": {
+    "./vox-pop-dto": "./src/vox-pop/vox-pop.dto.ts",
+    "./submissions-dto": "./src/submissions/submissions.dto.ts",
+    "./review-dto": "./src/review/review.dto.ts",
+    "./auth-dto": "./src/auth/auth.dto.ts"
   },
   "dependencies": {
     "@nestjs/common": "^9.0.0",
